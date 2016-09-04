@@ -1,12 +1,14 @@
-LIB_ANTLR := lib/antlr.jar
-ANTLR_SCRIPT := Micro.g4
 
 all: group compiler
 
 group:
-	@echo "Jordan Huffaker, Eric Colter"
+	@echo "Jordan Huffaker jhuffak, Eric Colter coltere"
 compiler: flex
-	g++  -Isrc generated/*.cpp -o micro
+	rm -rf objects
+	mkdir objects
+	g++  -Isrc generated/*.cpp -c -o objects/tokens.o
+	g++  objects/* -o micro
+
 
 flex: 
 	rm -rf generated
@@ -14,6 +16,6 @@ flex:
 	flex -+ -o generated/flex.yy.cpp src/tokens.l
 
 clean:
-	rm -rf generated micro
+	rm -rf generated micro objects
 
 .PHONY: all group compiler clean flex

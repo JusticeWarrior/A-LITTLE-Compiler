@@ -5,7 +5,7 @@
 #define PRINT_INFO(name, value)				\
   do {							\
     *yyout << "Token type: " << (name) << std::endl <<	\
-    "Value: " << (value); << std::endl <<	\
+    "Value: " << (value); << std::endl	\
   }while(0)
 }
 

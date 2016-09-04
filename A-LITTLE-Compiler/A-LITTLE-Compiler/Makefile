@@ -11,9 +11,9 @@ compiler: flex
 flex: 
 	rm -rf generated
 	mkdir generated
-	flex -+ -o generated/flex.yy.cpp src/tokens.lex
+	flex -+ -o generated/flex.yy.cpp src/tokens.l
 
 clean:
-	rm -rf generated
+	rm -rf generated micro
 
 .PHONY: all group compiler clean flex

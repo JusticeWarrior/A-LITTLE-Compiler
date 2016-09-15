@@ -1,3 +1,6 @@
+LEXER=lexer.l
+GRAMMAR=grammar.y
+
 
 all: group compiler
 
@@ -13,7 +16,9 @@ compiler: flex
 flex: 
 	rm -rf generated
 	mkdir generated
-	flex -+ -o generated/flex.yy.cpp src/tokens.l
+	flex -o generated/flex.yy.cpp src/lexer.l
+	cat generated/flex.yy.cpp | grep -v "define yyFlexLexer" > generated/tmp
+	mv generated/tmp generated/flex.yy.cpp
 
 clean:
 	rm -rf generated micro objects

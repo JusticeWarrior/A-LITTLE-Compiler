@@ -1,0 +1,30 @@
+%code{
+  #include "tokens.hpp"
+  #include "scanner.hpp"
+}
+
+%union{
+  double float_val;
+  int int_val;
+  std::str str_val;
+}
+
+%token <int_val> END
+%token    <str_val> KEYWORD 
+%token    <str_val> IDENTIFIER
+%token    <str_val> FLOATLITERAL
+%token    <int_val> INTLITERAL
+%token    <str_val> STRINGLITERAL
+%token    <str_val> OPERATOR
+%token    <str_val> TRASH
+
+%%
+  stmt_list:
+    | stmt_list stmt
+    ;  
+  stmt
+    : KEYWORD IDENTIFIER INTLITERAL OPERATOR
+    ;
+%%
+
+

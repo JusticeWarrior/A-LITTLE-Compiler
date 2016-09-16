@@ -6,19 +6,22 @@ all: group compiler
 
 group:
 	@echo "Jordan Huffaker jhuffak, Eric Colter coltere"
-compiler: flex
+compiler: bison flex
 	rm -rf objects
 	mkdir objects
-	g++  -Isrc generated/*.cpp -c -o objects/tokens.o
-	g++  objects/* -o micro
+	g++  -Isrc -Igenerated generated/*.cpp -c
+	g++ ./*.o -o micro
 
 
 flex: 
-	rm -rf generated
-	mkdir generated
 	flex -o generated/flex.yy.cpp src/lexer.l
 	cat generated/flex.yy.cpp | grep -v "define yyFlexLexer" > generated/tmp
 	mv generated/tmp generated/flex.yy.cpp
+
+bison:
+	rm -rf generated
+	mkdir generated
+	bison -d src/grammar.ypp -o generated/grammar.tab.cpp
 
 clean:
 	rm -rf generated micro objects

@@ -1,3 +1,6 @@
+#ifndef _SCANNER_H_
+#define _SCANNER_H_
+
 #if ! defined(yyFlexLexerOnce)
 #include <FlexLexer.h>
 #endif
@@ -9,3 +12,5 @@ class LittleScanner: public yyFlexLexer{
     LittleScanner(std::istream* i, std::ostream* o): yyFlexLexer(i,o){}
     virtual int yylex();
 };
+
+#endif

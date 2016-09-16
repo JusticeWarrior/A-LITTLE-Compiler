@@ -1,5 +1,8 @@
 LEXER=lexer.l
 GRAMMAR=grammar.y
+GEN_DIR=generated
+SRC_DIR=src
+OBJ_DIR=objects
 
 
 all: group compiler

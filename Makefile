@@ -9,8 +9,7 @@ group:
 compiler: bison flex
 	rm -rf objects
 	mkdir objects
-	g++  -Isrc -Igenerated generated/*.cpp -c
-	g++ ./*.o -o micro
+	g++  -Isrc -Igenerated generated/*.cpp src/*.cpp -o micro
 
 
 flex: 

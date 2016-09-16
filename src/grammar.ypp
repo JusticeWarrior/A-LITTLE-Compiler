@@ -51,10 +51,3 @@ void yyerror(LittleParser& parser, LittleScanner& scanner, const char* error){
     return parser.error(error);
   }
 
-void LittleParser::error(const char* err){
-  std::cout << "Not Accepted!" << std::endl;
-}
-
-void LittleParser::parse(){
-  yyparse(*this, scanner);
-}

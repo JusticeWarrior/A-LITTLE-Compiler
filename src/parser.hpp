@@ -9,7 +9,8 @@ extern int yyparse(LittleParser& parser, LittleScanner& scanner);
 
 class LittleParser{
   public:
-    LittleParser(): scanner(&std::cin, &std::cout){};
+    LittleParser(std::istream* i, std::ostream* o);
+    LittleParser(std::istream* i);
     void parse();
     void error(const char* error);
     bool accepted();

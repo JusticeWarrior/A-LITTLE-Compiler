@@ -53,8 +53,11 @@ int main(){
   return 0;
   */
 
-  LittleParser parser = LittleParser();
+  LittleParser parser = LittleParser(&std::cin);
   parser.parse();
-  std::cout<<"DONK"<<std::endl;
+  if (parser.accepted())
+    std::cout << "Accepted!" << std::endl;
+  else
+    std::cout << "Not Accepted!" << std::endl;
 }
 

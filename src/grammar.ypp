@@ -72,9 +72,9 @@
 
 %%
   /* Program */
-  program: PROGRAM id BEGINT pgm_body END;  
-  id: IDENTIFIER;
-  pgm_body: decl func_declarations;
+  program: PROGRAM id BEGINT pgm_body END ;
+  id: IDENTIFIER ;
+  pgm_body: decl func_declarations ;
   decl: string_decl decl | var_decl decl | ;
 
   /* Global String Declaration */
@@ -95,8 +95,8 @@
 
   /* Function Declarations */
   func_declarations: func_decl func_declarations | ;
-  fuct_decl: FUNCTION any_type id PARANTHLEFT param_decl_list PARANTHRIGHT BEGINT func_body END ;
-  fuct_body: decl stmt_list ;
+  func_decl: FUNCTION any_type id PARANTHLEFT param_decl_list PARANTHRIGHT BEGINT func_body END ;
+  func_body: decl stmt_list ;
 
   /* Statement List */
   stmt_list: stmt stmt_list | ;

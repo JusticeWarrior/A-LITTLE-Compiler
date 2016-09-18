@@ -29,8 +29,22 @@
   char* str_val;
 }
 
+%token    <int_val> ENDFILE
 %token    <int_val> END
-%token    <str_val> KEYWORD 
+%token    <int_val> PROGRAM
+%token    <int_val> STRING
+%token    <int_val> FLOAT
+%token    <int_val> INT
+%token    <int_val> VOID
+%token    <int_val> FUNCTION
+%token    <int_val> BEGIN
+%token    <int_val> READ
+%token    <int_val> WRITE
+%token    <int_val> RETURN
+%token    <int_val> TRUE
+%token    <int_val> FALSE
+%token    <int_val> DO
+%token    <int_val> WHILE
 %token    <str_val> IDENTIFIER
 %token    <str_val> FLOATLITERAL
 %token    <int_val> INTLITERAL
@@ -43,9 +57,10 @@
     | stmt_list stmt
     ;  
   stmt
-    : KEYWORD
+    : WHILE
     | IDENTIFIER
     ;
+
 %%
 
 void yyerror(LittleParser& parser, LittleScanner& scanner, const char* error){

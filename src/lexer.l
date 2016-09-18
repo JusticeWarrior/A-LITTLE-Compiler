@@ -33,7 +33,7 @@ whitespace    [ \n\t\r]+
 other	      .
 
 %%
-{keyword}	  {PRINT_INFO("KEYWORD",YYText()); return(KEYWORD);}
+{keyword}	  {PRINT_INFO("KEYWORD",YYText()); return(WHILE);}
 {identifier}	  {PRINT_INFO("IDENTIFIER", YYText()); return(IDENTIFIER);}
 {floatliteral}	  {PRINT_INFO("FLOATLITERAL", YYText()); return(FLOATLITERAL);}
 {intliteral}	  {PRINT_INFO("INTLITERAL", YYText()); return (INTLITERAL);}

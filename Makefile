@@ -20,6 +20,7 @@ flex:
 	cat generated/flex.yy.cpp | grep -v "define yyFlexLexer" > generated/tmp
 	mv generated/tmp generated/flex.yy.cpp
 
+
 bison:
 	rm -rf generated
 	mkdir generated

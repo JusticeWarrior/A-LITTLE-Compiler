@@ -1,7 +1,7 @@
 
 %top{
 #include <iostream>
-#include <stdio.h>
+#include <fstream>
 #include <string.h>
 #include "grammar.tab.hpp"
 #include "scanner.hpp"
@@ -95,15 +95,9 @@ FALSE      {PRINT_INFO("KEYWORD", YYText()); return FALSE     ;}
 %%
 
 int main(){
-  /*
-  LittleScanner* lexer = new LittleScanner(&std::cin, &std::cout);
-  while (lexer->yylex()!=token::END){
-  }
-  delete lexer;
-  return 0;
-  */
-
-  LittleParser parser = LittleParser(&std::cin);
+  std::ofstream file;
+  file.open("lexer_out.txt");
+  LittleParser parser = LittleParser(&std::cin, &file);
   parser.parse();
   if (parser.accepted())
     std::cout << "Accepted!" << std::endl;

@@ -86,6 +86,14 @@ FALSE      {PRINT_INFO("KEYWORD", YYText()); return FALSE     ;}
     return SEMICOLON;
   else if(!strcmp(YYText(), ","))
     return COMMA;
+  else if(!strcmp(YYText(), "+"))
+    return PLUS;
+  else if(!strcmp(YYText(), "-"))
+    return MINUS;
+  else if(!strcmp(YYText(), "*"))
+    return MULTIPLY;
+  else if(!strcmp(YYText(), "/"))
+    return DIVIDE;
   else
     return COMMENT;
 

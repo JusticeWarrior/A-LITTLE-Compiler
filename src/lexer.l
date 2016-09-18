@@ -39,9 +39,9 @@ other	      .
 {intliteral}	  {PRINT_INFO("INTLITERAL", YYText()); return (INTLITERAL);}
 {stringliteral}	  {PRINT_INFO("STRINGLITERAL",YYText()); return (STRINGLITERAL);}
 {comment}	  ;
-{operator}	  {PRINT_INFO("OPERATOR", YYText()); return (OPERATOR);}
+{operator}	  {PRINT_INFO("OPERATOR", YYText()); return (END);}
 {whitespace}	  ;
-{other} {return (TRASH);}
+{other} {return (END);}
 %%
 
 int main(){

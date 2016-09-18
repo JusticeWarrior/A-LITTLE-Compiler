@@ -100,8 +100,8 @@ int main(){
   LittleParser parser = LittleParser(&std::cin, &file);
   parser.parse();
   if (parser.accepted())
-    std::cout << "Accepted!" << std::endl;
+    std::cout << "Accepted" << std::endl;
   else
-    std::cout << "Not Accepted!" << std::endl;
+    std::cout << "Not Accepted" << std::endl;
 }
 

@@ -1,2 +1,94 @@
+Token Type: KEYWORD
+Value: PROGRAM
 Token Type: IDENTIFIER
-Value: asdf
+Value: test
+Token Type: KEYWORD
+Value: BEGIN
+Token Type: KEYWORD
+Value: STRING
+Token Type: IDENTIFIER
+Value: str
+Token Type: OPERATOR
+Value: :=
+Token Type: STRINGLITERAL
+Value: "test"
+Token Type: OPERATOR
+Value: ;
+Token Type: KEYWORD
+Value: INT
+Token Type: IDENTIFIER
+Value: a
+Token Type: OPERATOR
+Value: ,
+Token Type: IDENTIFIER
+Value: b
+Token Type: OPERATOR
+Value: ,
+Token Type: IDENTIFIER
+Value: c
+Token Type: OPERATOR
+Value: ,
+Token Type: IDENTIFIER
+Value: g
+Token Type: OPERATOR
+Value: ,
+Token Type: IDENTIFIER
+Value: h
+Token Type: OPERATOR
+Value: ,
+Token Type: IDENTIFIER
+Value: i
+Token Type: OPERATOR
+Value: ,
+Token Type: IDENTIFIER
+Value: j
+Token Type: OPERATOR
+Value: ,
+Token Type: IDENTIFIER
+Value: k
+Token Type: OPERATOR
+Value: ,
+Token Type: IDENTIFIER
+Value: l
+Token Type: OPERATOR
+Value: ,
+Token Type: IDENTIFIER
+Value: p
+Token Type: OPERATOR
+Value: ,
+Token Type: IDENTIFIER
+Value: o
+Token Type: OPERATOR
+Value: ,
+Token Type: IDENTIFIER
+Value: r
+Token Type: OPERATOR
+Value: ,
+Token Type: IDENTIFIER
+Value: u
+Token Type: OPERATOR
+Value: ,
+Token Type: IDENTIFIER
+Value: y
+Token Type: OPERATOR
+Value: ;
+Token Type: KEYWORD
+Value: FUNCTION
+Token Type: KEYWORD
+Value: INT
+Token Type: IDENTIFIER
+Value: main
+Token Type: OPERATOR
+Value: (
+Token Type: OPERATOR
+Value: )
+Token Type: KEYWORD
+Value: BEGIN
+Token Type: IDENTIFIER
+Value: c
+Token Type: OPERATOR
+Value: :=
+Token Type: IDENTIFIER
+Value: a
+Token Type: OPERATOR
+Value: +

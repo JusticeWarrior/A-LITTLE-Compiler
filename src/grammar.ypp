@@ -29,28 +29,46 @@
   char* str_val;
 }
 
-%token    <int_val> ENDFILE
-%token    <int_val> END
 %token    <int_val> PROGRAM
-%token    <int_val> STRING
-%token    <int_val> FLOAT
-%token    <int_val> INT
-%token    <int_val> VOID
-%token    <int_val> FUNCTION
-%token    <int_val> BEGIN
-%token    <int_val> READ
-%token    <int_val> WRITE
-%token    <int_val> RETURN
-%token    <int_val> TRUE
-%token    <int_val> FALSE
-%token    <int_val> DO
-%token    <int_val> WHILE
+%token    <int_val> END
 %token    <str_val> IDENTIFIER
-%token    <str_val> FLOATLITERAL
-%token    <int_val> INTLITERAL
+%token    <str_val> STRING
 %token    <str_val> STRINGLITERAL
-%token    <str_val> OPERATOR
-%token    <str_val> TRASH
+%token    <str_val> FLOAT
+%token    <str_val> INT
+%token    <str_val> VOID
+%token    <str_val> FUNCTION
+%token    <str_val> BEGIN
+%token    <str_val> READ
+%token    <str_val> WRITE
+%token    <str_val> RETURN
+%token    <int_val> INTLITERAL
+%token    <str_val> FLOATLITERAL
+%token    <str_val> PLUS
+%token    <str_val> MINUS
+%token    <str_val> MULTIPLY
+%token    <str_val> DIVIDE
+%token    <str_val> IF
+%token    <str_val> ENDIF
+%token    <str_val> ELSIF
+%token    <str_val> TRUE
+%token    <str_val> FALSE
+%token    <str_val> LESSTHAN
+%token    <str_val> GREATERTHAN
+%token    <str_val> EQUAL
+%token    <str_val> NOTEQUAL
+%token    <str_val> LESSTHANEQUAL
+%token    <str_val> GREATERTHANEQUAL
+%token    <str_val> DO
+%token    <str_val> WHILE
+%token    <str_val> CONTINUE
+%token    <str_val> BREAK
+%token    <str_val> COMMENT
+%token    <str_val> COLONEQUAL
+%token    <str_val> PARANTHLEFT
+%token    <str_val> PARANTHRIGHT
+%token    <str_val> SEMICOLON
+%token    <str_val> COMMA
 
 %%
   stmt_list:

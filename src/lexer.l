@@ -2,8 +2,12 @@
 %top{
 #include <iostream>
 #include <stdio.h>
-#include "tokens.hpp"
+#include "grammar.tab.hpp"
 #include "scanner.hpp"
+  
+// Move this to anothe file
+#include "parser.hpp"
+
 #define PRINT_INFO(name, value)				\
   do {							\
     *yyout << "Token Type: " << (name) << std::endl <<	\
@@ -29,23 +33,28 @@ whitespace    [ \n\t\r]+
 other	      .
 
 %%
-{keyword}	  {PRINT_INFO("KEYWORD",YYText()); return(token::KEYWORD);}
-{identifier}	  {PRINT_INFO("IDENTIFIER", YYText()); return(token::IDENTIFIER);}
-{floatliteral}	  {PRINT_INFO("FLOATLITERAL", YYText()); return(token::FLOATLITERAL);}
-{intliteral}	  {PRINT_INFO("INTLITERAL", YYText()); return (token::INTLITERAL);}
-{stringliteral}	  {PRINT_INFO("STRINGLITERAL",YYText()); return (token::STRINGLITERAL);}
+{keyword}	  {PRINT_INFO("KEYWORD",YYText()); return(KEYWORD);}
+{identifier}	  {PRINT_INFO("IDENTIFIER", YYText()); return(IDENTIFIER);}
+{floatliteral}	  {PRINT_INFO("FLOATLITERAL", YYText()); return(FLOATLITERAL);}
+{intliteral}	  {PRINT_INFO("INTLITERAL", YYText()); return (INTLITERAL);}
+{stringliteral}	  {PRINT_INFO("STRINGLITERAL",YYText()); return (STRINGLITERAL);}
 {comment}	  ;
-{operator}	  {PRINT_INFO("OPERATOR", YYText()); return (token::OPERATOR);}
+{operator}	  {PRINT_INFO("OPERATOR", YYText()); return (OPERATOR);}
 {whitespace}	  ;
-{other} {return (token::TRASH);}
+{other} {return (TRASH);}
 %%
 
 int main(){
-  //FlexLexer* lexer = new yyFlexLexer(&std::cin, &std::cout);
+  /*
   LittleScanner* lexer = new LittleScanner(&std::cin, &std::cout);
   while (lexer->yylex()!=token::END){
   }
   delete lexer;
   return 0;
+  */
+
+  LittleParser parser = LittleParser();
+  parser.parse();
+  std::cout<<"DONK"<<std::endl;
 }
 

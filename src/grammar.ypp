@@ -1,15 +1,35 @@
+
 %code{
+  #include <string>
+  #include <stdint.h>
   #include "tokens.hpp"
   #include "scanner.hpp"
+  #include "parser.hpp"
+
+  #undef yylex
+  #define yylex scanner.yylex
+
+  #undef yyparse
+  //#define yyparse LittleParser::yyparse
+  //#undef yyerror
+  //#define yyerror LittleParser::error
+
+  //#undef YYPARSE_PARAM
+
+  void yyerror (LittleParser& parser, LittleScanner& scanner, const char* err);
 }
+
+%parse-param {LittleParser& parser}
+%parse-param {LittleScanner& scanner}
+
 
 %union{
   double float_val;
   int int_val;
-  std::str str_val;
+  char* str_val;
 }
 
-%token <int_val> END
+%token    <int_val> END
 %token    <str_val> KEYWORD 
 %token    <str_val> IDENTIFIER
 %token    <str_val> FLOATLITERAL
@@ -23,8 +43,18 @@
     | stmt_list stmt
     ;  
   stmt
-    : KEYWORD IDENTIFIER INTLITERAL OPERATOR
+    : KEYWORD
     ;
 %%
 
+void yyerror(LittleParser& parser, LittleScanner& scanner, const char* error){
+    return parser.error(error);
+  }
 
+void LittleParser::error(const char* err){
+  std::cout << "Not Accepted!" << std::endl;
+}
+
+void LittleParser::parse(){
+  yyparse(*this, scanner);
+}

@@ -2,6 +2,7 @@
 %top{
 #include <iostream>
 #include <stdio.h>
+#include <string.h>
 #include "grammar.tab.hpp"
 #include "scanner.hpp"
   
@@ -23,7 +24,7 @@
 %option c++
 
 keyword PROGRAM|BEGIN|END|FUNCTION|READ|WRITE|IF|ELSIF|ENDIF|DO|WHILE|CONTINUE|BREAK|RETURN|INT|VOID|STRING|FLOAT|TRUE|FALSE
-identifier    [a-zA-Z_][a-zA-Z_0-9]*
+identifier    [a-zA-Z_][a-zA-Z_0-9]{0,30}
 floatliteral  [0-9]*[.][0-9]+
 intliteral    [0-9]+
 stringliteral \"[^"]{0,80}\"
@@ -33,15 +34,64 @@ whitespace    [ \n\t\r]+
 other	      .
 
 %%
-{keyword}	  {PRINT_INFO("KEYWORD",YYText()); return(WHILE);}
+
+PROGRAM    {PRINT_INFO("KEYWORD", YYText()); return PROGRAM   ;}
+BEGIN      {PRINT_INFO("KEYWORD", YYText()); return BEGINT    ;}
+END        {PRINT_INFO("KEYWORD", YYText()); return END       ;}
+FUNCTION   {PRINT_INFO("KEYWORD", YYText()); return FUNCTION  ;}
+READ       {PRINT_INFO("KEYWORD", YYText()); return READ      ;}
+WRITE      {PRINT_INFO("KEYWORD", YYText()); return WRITE     ;}
+IF         {PRINT_INFO("KEYWORD", YYText()); return IF        ;}
+ELSIF      {PRINT_INFO("KEYWORD", YYText()); return ELSIF     ;}
+ENDIF      {PRINT_INFO("KEYWORD", YYText()); return ENDIF     ;}
+DO         {PRINT_INFO("KEYWORD", YYText()); return DO        ;}
+WHILE      {PRINT_INFO("KEYWORD", YYText()); return WHILE     ;}
+CONTINUE   {PRINT_INFO("KEYWORD", YYText()); return CONTINUE  ;}
+BREAK      {PRINT_INFO("KEYWORD", YYText()); return BREAK     ;}
+RETURN     {PRINT_INFO("KEYWORD", YYText()); return RETURN    ;}
+INT        {PRINT_INFO("KEYWORD", YYText()); return INT       ;}
+VOID       {PRINT_INFO("KEYWORD", YYText()); return VOID      ;}
+STRING     {PRINT_INFO("KEYWORD", YYText()); return STRING    ;}
+FLOAT      {PRINT_INFO("KEYWORD", YYText()); return FLOAT     ;}
+TRUE       {PRINT_INFO("KEYWORD", YYText()); return TRUE      ;}
+FALSE      {PRINT_INFO("KEYWORD", YYText()); return FALSE     ;}
+
+
 {identifier}	  {PRINT_INFO("IDENTIFIER", YYText()); return(IDENTIFIER);}
 {floatliteral}	  {PRINT_INFO("FLOATLITERAL", YYText()); return(FLOATLITERAL);}
 {intliteral}	  {PRINT_INFO("INTLITERAL", YYText()); return (INTLITERAL);}
 {stringliteral}	  {PRINT_INFO("STRINGLITERAL",YYText()); return (STRINGLITERAL);}
 {comment}	  ;
-{operator}	  {PRINT_INFO("OPERATOR", YYText()); return (END);}
+{operator}	  {
+  PRINT_INFO("OPERATOR", YYText());
+  if(!strcmp(YYText(), "<"))
+    return LESSTHAN;
+  else if(!strcmp(YYText(), ">"))
+    return GREATERTHAN;
+  else if(!strcmp(YYText(), "="))
+    return EQUAL;
+  else if(!strcmp(YYText(), "!="))
+    return NOTEQUAL;
+  else if(!strcmp(YYText(), "<="))
+    return LESSTHANEQUAL;
+  else if(!strcmp(YYText(), ">="))
+    return GREATERTHANEQUAL;
+  else if(!strcmp(YYText(), ":="))
+    return COLONEQUAL;
+  else if(!strcmp(YYText(), "("))
+    return PARANTHLEFT;
+  else if(!strcmp(YYText(), ")"))
+    return PARANTHRIGHT;
+  else if(!strcmp(YYText(), ";"))
+    return SEMICOLON;
+  else if(!strcmp(YYText(), ","))
+    return COMMA;
+  else
+    return COMMENT;
+
+}
 {whitespace}	  ;
-{other} {return (END);}
+{other} {return (COMMENT);}
 %%
 
 int main(){

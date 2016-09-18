@@ -1,0 +1,23 @@
+string = """PROGRAM
+BEGIN
+END
+FUNCTION
+READ
+WRITE
+IF
+ELSIF
+ENDIF
+DO
+WHILE
+CONTINUE
+BREAK
+RETURN
+INT
+VOID
+STRING
+FLOAT
+TRUE
+FALSE"""
+
+for i in string.split("\n"):
+  print '%-10s {PRINT_INFO("KEYWORD", YYTEXT()); return %-10s;}'%(i,i)

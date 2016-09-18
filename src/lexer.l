@@ -1,7 +1,6 @@
 
 %top{
 #include <iostream>
-#include <fstream>
 #include <string.h>
 #include "grammar.tab.hpp"
 #include "scanner.hpp"
@@ -103,9 +102,7 @@ FALSE      {PRINT_INFO("KEYWORD", YYText()); return FALSE     ;}
 %%
 
 int main(){
-  std::ofstream file;
-  file.open("lexer_out.txt");
-  LittleParser parser = LittleParser(&std::cin, &file);
+  LittleParser parser = LittleParser(&std::cin);
   parser.parse();
   if (parser.accepted())
     std::cout << "Accepted" << std::endl;

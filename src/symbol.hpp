@@ -5,14 +5,16 @@
 
 class Symbol{
 	public:
-		enum Types { INT, STRING, FLOAT };
-		std::string name;
-		Types type;
-		union {
+		union T {
 			int n;
 			std::string s;
 			float f;
-		} value;
+		};
+		enum Types { INT, STRING, FLOAT };
+		Symbol(std::string name, Types type, T value);
+		std::string Name;
+		Types Type;
+		T Value;
 }
 
 #endif

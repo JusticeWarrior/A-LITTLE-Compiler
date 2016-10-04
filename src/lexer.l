@@ -56,7 +56,7 @@ TRUE       {PRINT_INFO("KEYWORD", YYText()); return TRUE      ;}
 FALSE      {PRINT_INFO("KEYWORD", YYText()); return FALSE     ;}
 
 
-{identifier}	  {PRINT_INFO("IDENTIFIER", YYText()); return(IDENTIFIER);}
+{identifier}	  {PRINT_INFO("IDENTIFIER", YYText()); yylval.str_val = strdup(YYText()); return(IDENTIFIER);}
 {floatliteral}	  {PRINT_INFO("FLOATLITERAL", YYText()); return(FLOATLITERAL);}
 {intliteral}	  {PRINT_INFO("INTLITERAL", YYText()); return (INTLITERAL);}
 {stringliteral}	  {PRINT_INFO("STRINGLITERAL",YYText()); return (STRINGLITERAL);}

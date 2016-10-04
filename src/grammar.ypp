@@ -1,6 +1,7 @@
 
 %code{
   #include <string>
+  #include <vector>
   #include <stdint.h>
   #include "tokens.hpp"
   #include "scanner.hpp"
@@ -27,6 +28,7 @@
   double float_val;
   int int_val;
   char* str_val;
+  std::vector<std::string> str_arr;
 }
 
 %token    <int_val> PROGRAM
@@ -69,6 +71,9 @@
 %token    <str_val> PARANTHRIGHT
 %token    <str_val> SEMICOLON
 %token    <str_val> COMMA
+%type     <str_val> id
+%type     <str_arr> id_list
+%type     <str_arr> id_tail
 
 %%
   /* Program */
@@ -82,11 +87,11 @@
   str: STRINGLITERAL;
 
   /* Variable Declaration */
-  var_decl: var_type id_list SEMICOLON ;
+  var_decl: var_type id_list SEMICOLON {std::cout<<*$2.begin()<< std::endl};
   var_type: FLOAT | INT ;
   any_type: var_type | VOID ;
-  id_list: id id_tail ;
-  id_tail: COMMA id id_tail | ;
+  id_list: id id_tail { std::cout<<$1<<std::endl;};
+  id_tail: COMMA id id_tail {$$ = $3.insert($3.begin(), $2)} | {$$ = std::vector<std::string>();};
 
   /* Function Paramater List */
   param_decl_list: param_decl param_decl_tail | ;

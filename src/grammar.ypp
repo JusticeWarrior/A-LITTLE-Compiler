@@ -12,7 +12,7 @@
   #define yylex scanner.yylex
 
   #define str_arr_t std::vector<char*>
-  #define sym_arr_t vector<Symbol*>
+  #define sym_arr_t std::vector<Symbol*>
 
   #undef yyparse
   //#define yyparse LittleParser::yyparse
@@ -84,10 +84,16 @@
 %token    <str_val> PARANTHRIGHT
 %token    <str_val> SEMICOLON
 %token    <str_val> COMMA
+
 %type     <str_val> id
 %type     <str_val> str
 %type     <str_arr> id_list
 %type     <str_arr> id_tail
+
+%type     <sym_arr> param_decl_list
+%type	  <sym_arr> param_decl_tail
+%type	  <sym>	    param_decl
+%type     <int_val> var_type
 
 %%
   /* Program */
@@ -131,8 +137,8 @@
     }
     ;
   var_type
-    : FLOAT
-    | INT 
+    : FLOAT {$$ = Symbol::FLOAT;}
+    | INT {$$ = Symbol::INT;}
     ;
   any_type
     : var_type 
@@ -160,15 +166,42 @@
 
   /* Function Paramater List */
   param_decl_list
-    : param_decl param_decl_tail 
-    | 
+    : param_decl param_decl_tail {
+      sym_arr_t* pArr = static_cast<sym_arr_t*>($2);
+      Symbol* pSym = static_cast<Symbol*>($1);
+      pArr->insert(pArr->begin(), pSym);
+      $$ = pArr;
+      sym_arr_t::iterator it;
+      for (it = pArr->begin(); it != pArr->end(); it++){
+	pSym = *it;
+	if (pSym->Type == Symbol::INT){
+	  std::cout <<
+	  "insert_symbol("<<pSym->Name<<", INT, NULL)" <<
+	  std::endl;
+	}
+	else {
+	  std::cout <<
+	  "insert_symbol("<<pSym->Name<<", FLOAT, NULL)";
+	}
+      }
+    }
+    | {$$ = 0;}
     ;
   param_decl
-    : var_type id 
+    : var_type id{
+      Symbol::T value;
+      $$ = static_cast<void*>( 
+	new Symbol($2, static_cast<Symbol::Types>($1), value)
+	);
+    }
     ;
   param_decl_tail
-    : COMMA param_decl param_decl_tail 
-    | 
+    : COMMA param_decl param_decl_tail {
+      sym_arr_t* pArr = static_cast<sym_arr_t*>($3);
+      Symbol* pSym = static_cast<Symbol*>($2);
+      pArr->insert(pArr->begin(), pSym);
+    }
+    | {$$ = static_cast<void*>(new sym_arr_t())}
     ;
 
   /* Function Declarations */

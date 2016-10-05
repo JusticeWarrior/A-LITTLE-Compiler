@@ -10,6 +10,8 @@
   #undef yylex
   #define yylex scanner.yylex
 
+  #define str_arr_t std::vector<char*>
+
   #undef yyparse
   //#define yyparse LittleParser::yyparse
   //#undef yyerror
@@ -28,7 +30,12 @@
   double float_val;
   int int_val;
   char* str_val;
-  std::vector<std::string> str_arr;
+  //std::vector<std::string> *str_arr;
+  //typename std::vector<std::string>* str_arr;
+  // I can't figure out how to make the union work with cpp types, so we're
+  // going to do something awful instead.
+  void* str_arr;
+
 }
 
 %token    <int_val> PROGRAM
@@ -83,15 +90,37 @@
   decl: string_decl decl | var_decl decl | ;
 
   /* Global String Declaration */
-  string_decl: STRING id COLONEQUAL str SEMICOLON ;
+  string_decl: STRING id COLONEQUAL str SEMICOLON {
+    std::cout << $2 << std::endl; // DECL
+  };
   str: STRINGLITERAL;
 
   /* Variable Declaration */
-  var_decl: var_type id_list SEMICOLON {std::cout<<*$2.begin()<< std::endl};
+  var_decl: var_type id_list SEMICOLON {
+    str_arr_t* pArr = static_cast<str_arr_t*>($2);
+    str_arr_t::iterator it;
+    for (it = pArr->begin(); it != pArr->end(); it++){
+      std::cout << *it << " "; // DECL
+    }
+    std::cout << std::endl;
+  };
   var_type: FLOAT | INT ;
   any_type: var_type | VOID ;
-  id_list: id id_tail { std::cout<<$1<<std::endl;};
-  id_tail: COMMA id id_tail {$$ = $3.insert($3.begin(), $2)} | {$$ = std::vector<std::string>();};
+  id_list: id id_tail {
+    str_arr_t* pArr;
+    $$ = $2;
+    pArr = static_cast<str_arr_t*>($2);
+    pArr->insert(pArr->begin(), $1);
+  };
+  id_tail: COMMA id id_tail {
+    str_arr_t* pArr;
+    $$ = $3;
+    pArr = static_cast<str_arr_t*>($3);
+    pArr->insert(pArr->begin(), $2);
+  }
+  | {
+    $$ = static_cast<void*>(new str_arr_t());
+  };
 
   /* Function Paramater List */
   param_decl_list: param_decl param_decl_tail | ;

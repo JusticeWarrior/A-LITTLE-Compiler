@@ -2,6 +2,8 @@
 %top{
 #include <iostream>
 #include <string.h>
+#include <string>
+#include <vector>
 #include "grammar.tab.hpp"
 #include "scanner.hpp"
   

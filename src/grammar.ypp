@@ -85,6 +85,7 @@
 %token    <str_val> SEMICOLON
 %token    <str_val> COMMA
 %type     <str_val> id
+%type     <str_val> str
 %type     <str_arr> id_list
 %type     <str_arr> id_tail
 
@@ -96,7 +97,7 @@
     }
     ;
   program_head
-    : PROGRAM {std::cout << "Sybmol Table GLOBAL" << std::endl;}
+    : PROGRAM {std::cout << "Symbol Table GLOBAL" << std::endl;}
     ;
   id
     : IDENTIFIER 
@@ -113,10 +114,10 @@
   /* Global String Declaration */
   string_decl
     : STRING id COLONEQUAL str SEMICOLON {
-      std::cout << $2 << std::endl; // DECL
+      std::cout << "insert_symbol("<<$2<<", STRING, "<<$4<<")" << std::endl; // DECL
     };
   str
-    : STRINGLITERAL
+    : STRINGLITERAL {$$ = $1;}
     ;
 
   /* Variable Declaration */
@@ -125,9 +126,8 @@
       str_arr_t* pArr = static_cast<str_arr_t*>($2);
       str_arr_t::iterator it;
       for (it = pArr->begin(); it != pArr->end(); it++){
-	std::cout << *it << " "; // DECL
+	std::cout << "insert_symbol("<<*it<<", INT, NULL)"<<std::endl;;
       }
-      std::cout << std::endl;
     }
     ;
   var_type
@@ -294,7 +294,7 @@
   compop: LESSTHAN | GREATERTHAN | EQUAL | NOTEQUAL | LESSTHANEQUAL | GREATERTHANEQUAL ;
 
   do_head
-    : DO {std::cout << "Symbol Table BLOCK"<< block_num++ << std::endl;}
+    : DO {std::cout << "Symbol Table BLOCK "<< block_num++ << std::endl;}
     ;
   do_while_stmt
     : do_head decl stmt_list WHILE PARANTHLEFT cond PARANTHRIGHT SEMICOLON {

@@ -7,7 +7,7 @@ class Symbol{
 	public:
 		union T {
 			int n;
-			std::string s;
+			char* s;
 			float f;
 		};
 		enum Types { INT, STRING, FLOAT };
@@ -15,6 +15,6 @@ class Symbol{
 		std::string Name;
 		Types Type;
 		T Value;
-}
+};
 
 #endif

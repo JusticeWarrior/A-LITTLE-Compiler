@@ -4,13 +4,14 @@
 #include "symbol.hpp"
 #include <list>
 #include <string>
+#include <sstream>
 
 class Table{
 	public:
 		Table(std::string _name);
 		void InsertSymbol(Symbol sym);
-		Symbol* GetSymbol(std::string name);
-		void PrintSymbols();
+		Symbol* GetSymbol(std::string _name);
+		void PrintSymbols(std::stringstream& stream);
 	private:
 		bool hasBeenPrinted;
 		std::string name;

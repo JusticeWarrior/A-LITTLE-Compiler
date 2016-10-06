@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "scanner.hpp"
+#include "table_factory.hpp"
 class LittleParser;
 
 extern int yyparse(LittleParser& parser, LittleScanner& scanner);
@@ -17,6 +18,7 @@ class LittleParser{
   private:
     bool accept;
     LittleScanner scanner;
+    TableFactory table_factory;
 
 };
 

@@ -13,6 +13,7 @@ class TableFactory{
     Symbol* get_symbol(std::string name);
   private:
     std::list<Table> scope_stack;
+    bool error;
     
 };
 

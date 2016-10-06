@@ -1,24 +1,39 @@
 #include "table_factory.hpp"
 #include "stdlib.h"
+#include <sstream>
+#include <iostream>
 
 TableFactory::TableFactory():
-  error(false)
+  error(false),
+  ss(new std::stringstream())
   {}
+TableFactory::~TableFactory(){
+  delete ss;
+}
 
-void TableFactory::insert_symbol(Symbol sym){
-  // Make sure the symbol doesn't already exist
-  scope_stack.front().InsertSymbol(sym);
+bool TableFactory::insert_symbol(Symbol sym){
+  if (scope_stack.front().GetSymbol(sym.Name)){
+    ss->clear();
+    ss->str("");
+    *ss << "DECLARATION ERROR " << sym.Name << std::endl;
+    return false;
+  }
+  else{
+    scope_stack.front().InsertSymbol(sym);
+    return true;
+  }
 }
 
 void TableFactory::push_table(std::string name){
-  if (!scope_stack.empty()){
-    std::cout << scope_stack.front().name << std::endl;
+  if (!scope_stack.empty()){ 
+   scope_stack.front().PrintSymbols(ss);
+   *ss << std::endl;
   }
   scope_stack.push_front(Table(name));
 }
 
 void TableFactory::pop_table(){
-  scope_stack.front().PrintSymbols();
+  scope_stack.front().PrintSymbols(ss);
   scope_stack.pop_front();
 }
 

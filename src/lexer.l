@@ -107,8 +107,8 @@ int main(){
   LittleParser parser = LittleParser(&std::cin);
   parser.parse();
   if (parser.accepted())
-    std::cout << "Accepted" << std::endl;
+    std::cout << parser.table_factory.ss->rdbuf();
   else
-    std::cout << "Not Accepted" << std::endl;
+    std::cout << parser.table_factory.ss->rdbuf();
 }
 

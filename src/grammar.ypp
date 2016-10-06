@@ -3,6 +3,7 @@
   #include <string>
   #include <vector>
   #include <stdint.h>
+  #include <typeinfo>
   #include "tokens.hpp"
   #include "scanner.hpp"
   #include "parser.hpp"
@@ -12,7 +13,7 @@
   #define yylex scanner.yylex
 
   #define str_arr_t std::vector<char*>
-  #define sym_arr_t std::vector<Symbol*>
+  #define sym_arr_t std::list<Symbol*>
 
   #undef yyparse
   //#define yyparse LittleParser::yyparse
@@ -34,10 +35,6 @@
   double float_val;
   int int_val;
   char* str_val;
-  //std::vector<std::string> *str_arr;
-  //typename std::vector<std::string>* str_arr;
-  // I can't figure out how to make the union work with cpp types, so we're
-  // going to do something awful instead.
   void* str_arr;
   void* sym_arr;
   void* sym;
@@ -99,11 +96,13 @@
   /* Program */
   program
     : program_head id BEGINT pgm_body END {
-      std::cout << "Pop Symbol Table" << std::endl;
+      parser.table_factory.pop_table();
     }
     ;
   program_head
-    : PROGRAM {std::cout << "Symbol Table GLOBAL" << std::endl;}
+    : PROGRAM {
+      parser.table_factory.push_table("GLOBAL");
+      }
     ;
   id
     : IDENTIFIER 
@@ -120,7 +119,15 @@
   /* Global String Declaration */
   string_decl
     : STRING id COLONEQUAL str SEMICOLON {
-      std::cout << "insert_symbol("<<$2<<", STRING, "<<$4<<")" << std::endl; // DECL
+      Symbol::T value;
+      value.s = $4;
+      if (! parser.table_factory.insert_symbol(Symbol($2, Symbol::STRING, value))){
+	free($2);
+	yyerror(parser,scanner, "Redeclaration Error");
+	YYABORT;
+      }
+      else
+	free($2);
     };
   str
     : STRINGLITERAL {$$ = $1;}
@@ -132,7 +139,12 @@
       str_arr_t* pArr = static_cast<str_arr_t*>($2);
       str_arr_t::iterator it;
       for (it = pArr->begin(); it != pArr->end(); it++){
-	std::cout << "insert_symbol("<<*it<<", INT, NULL)"<<std::endl;;
+	Symbol::T fun;
+	Symbol sym (*it, static_cast<Symbol::Types>($1), fun);
+	if(!parser.table_factory.insert_symbol(sym)){
+	  yyerror(parser,scanner, "Redeclaration Error");
+	  YYABORT;
+	}
       }
     }
     ;
@@ -160,7 +172,9 @@
       pArr->insert(pArr->begin(), $2);
     }
     | {
-      $$ = static_cast<void*>(new str_arr_t());
+      str_arr_t* str_arr = new str_arr_t();
+      parser.register_str_arr(str_arr);
+      $$ = static_cast<void*>(str_arr);
     }
     ;
 
@@ -169,11 +183,12 @@
     : param_decl param_decl_tail {
       sym_arr_t* pArr = static_cast<sym_arr_t*>($2);
       Symbol* pSym = static_cast<Symbol*>($1);
-      pArr->insert(pArr->begin(), pSym);
+      pArr->push_front(pSym);
       $$ = pArr;
       sym_arr_t::iterator it;
       for (it = pArr->begin(); it != pArr->end(); it++){
 	pSym = *it;
+	/*
 	if (pSym->Type == Symbol::INT){
 	  std::cout <<
 	  "insert_symbol("<<pSym->Name<<", INT, NULL)" <<
@@ -182,6 +197,11 @@
 	else {
 	  std::cout <<
 	  "insert_symbol("<<pSym->Name<<", FLOAT, NULL)";
+	}
+	*/
+	if (!parser.table_factory.insert_symbol(*pSym)){
+	  yyerror(parser,scanner, "Redeclaration Error");
+	  YYABORT;
 	}
       }
     }
@@ -199,9 +219,14 @@
     : COMMA param_decl param_decl_tail {
       sym_arr_t* pArr = static_cast<sym_arr_t*>($3);
       Symbol* pSym = static_cast<Symbol*>($2);
-      pArr->insert(pArr->begin(), pSym);
+      pArr->push_front(pSym);
+      $$ = $3;
     }
-    | {$$ = static_cast<void*>(new sym_arr_t())}
+    | {
+	sym_arr_t* sym_arr = new sym_arr_t();
+	$$ = static_cast<void*>(sym_arr);
+	parser.register_sym_arr(sym_arr);
+      }
     ;
 
   /* Function Declarations */
@@ -211,12 +236,14 @@
     ;
   func_head
     : FUNCTION any_type id {
-      std::cout << "Symbol Table " << $3 << std::endl;
+      parser.table_factory.push_table($3);
+      //std::cout << "Symbol Table " << $3 << std::endl;
     }
     ;
   func_decl
     : func_head PARANTHLEFT param_decl_list PARANTHRIGHT BEGINT func_body END {
-      std::cout << "Pop Symbol Table" << std::endl;
+      //std::cout << "Pop Symbol Table" << std::endl;
+      parser.table_factory.pop_table();
     }
     ;
   func_body
@@ -305,16 +332,34 @@
   /* Complex Statements and Condition */
   /*if_stmt: IF PARANTHLEFT cond PARANTHRIGHT decl stmt_list else_part ENDIF ;*/
   if_head
-    : IF {std::cout << "Symbol Table BLOCK " << block_num++ << std::endl;}
+    : IF {
+      std::string name ("BLOCK ");
+      std::string num = std::to_string(static_cast<long long>(block_num++));
+      name += num;
+      parser.table_factory.push_table(name);
+      //std::cout << "Symbol Table BLOCK " << block_num++ << std::endl;
+    }
     ;
   if_part
-    : if_head PARANTHLEFT cond PARANTHRIGHT decl stmt_list {std::cout << "Pop Symbol Table"<< std::endl;}
+    : if_head PARANTHLEFT cond PARANTHRIGHT decl stmt_list {
+      parser.table_factory.pop_table();
+      //std::cout << "Pop Symbol Table"<< std::endl;
+      }
     ;
   else_head
-    : ELSIF {std::cout << "Symbol Table BLOCK "<< block_num++ <<std::endl;}
+    : ELSIF {
+      std::string name ("BLOCK ");
+      std::string num = std::to_string(static_cast<long long>(block_num++));
+      name += num;
+      parser.table_factory.push_table(name);
+      //std::cout << "Symbol Table BLOCK " << block_num++ << std::endl;
+    }
     ;
   else_part
-    : else_head PARANTHLEFT cond PARANTHRIGHT decl stmt_list {std::cout << "Pop Symbol Table" << std::endl;} 
+    : else_head PARANTHLEFT cond PARANTHRIGHT decl stmt_list {
+      parser.table_factory.pop_table();
+      //std::cout << "Pop Symbol Table"<< std::endl;
+    } 
     ;
   else_part_recursive
     : else_part else_part_recursive
@@ -327,11 +372,18 @@
   compop: LESSTHAN | GREATERTHAN | EQUAL | NOTEQUAL | LESSTHANEQUAL | GREATERTHANEQUAL ;
 
   do_head
-    : DO {std::cout << "Symbol Table BLOCK "<< block_num++ << std::endl;}
+    : DO {
+      std::string name ("BLOCK ");
+      std::string num = std::to_string(static_cast<long long>(block_num++));
+      name += num;
+      parser.table_factory.push_table(name);
+      //std::cout << "Symbol Table BLOCK " << block_num++ << std::endl;
+    }
     ;
   do_while_stmt
     : do_head decl stmt_list WHILE PARANTHLEFT cond PARANTHRIGHT SEMICOLON {
-      std::cout << "Pop Symbol Table" << std::endl;
+      parser.table_factory.pop_table();
+      //std::cout << "Pop Symbol Table" << std::endl;
     }
     ;
 

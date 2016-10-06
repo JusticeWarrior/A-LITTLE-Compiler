@@ -7,15 +7,14 @@
 
 class Table{
 	public:
-		Table(std::string _name, Table* parent);
+		Table(std::string _name);
 		void InsertSymbol(Symbol sym);
-		Symbol GetSymbol(std::string name);
-		void PrintChildren();
-		Table* Parent;
+		Symbol* GetSymbol(std::string name);
+		void PrintSymbols();
 	private:
+		bool hasBeenPrinted;
 		std::string name;
 		std::list<Symbol> symbols;
-		std::list<Table*> children;
 };
 
 #endif

@@ -11,9 +11,7 @@ class Symbol{
 			float f;
 		};
 		enum Types { INT, STRING, FLOAT };
-		Symbol(std::string name, Types type, T value)
-		:Name(name), Type(type), Value(value)
-		{}
+		Symbol(std::string name, Types type, T value);
 		std::string Name;
 		Types Type;
 		T Value;

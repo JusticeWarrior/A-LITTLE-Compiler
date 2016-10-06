@@ -97,6 +97,7 @@
   program
     : program_head id BEGINT pgm_body END {
       parser.table_factory.pop_table();
+      free($2);
     }
     ;
   program_head
@@ -213,6 +214,7 @@
       $$ = static_cast<void*>( 
 	new Symbol($2, static_cast<Symbol::Types>($1), value)
 	);
+      free($2);
     }
     ;
   param_decl_tail
@@ -237,12 +239,11 @@
   func_head
     : FUNCTION any_type id {
       parser.table_factory.push_table($3);
-      //std::cout << "Symbol Table " << $3 << std::endl;
+      free($3);
     }
     ;
   func_decl
     : func_head PARANTHLEFT param_decl_list PARANTHRIGHT BEGINT func_body END {
-      //std::cout << "Pop Symbol Table" << std::endl;
       parser.table_factory.pop_table();
     }
     ;
@@ -272,7 +273,7 @@
     : assign_expr SEMICOLON 
     ;
   assign_expr
-    : id COLONEQUAL expr 
+    : id COLONEQUAL expr {free($1);} 
     ;
   read_stmt
     : READ PARANTHLEFT id_list PARANTHRIGHT SEMICOLON 
@@ -304,7 +305,7 @@
     | call_expr 
     ;
   call_expr
-    : id PARANTHLEFT expr_list PARANTHRIGHT 
+    : id PARANTHLEFT expr_list PARANTHRIGHT {free($1);} 
     ;
   expr_list
     : expr expr_list_tail 
@@ -316,7 +317,7 @@
     ;
   primary
     : PARANTHLEFT expr PARANTHRIGHT 
-    | id 
+    | id {free($1);}
     | INTLITERAL 
     | FLOATLITERAL 
     ;

@@ -19,7 +19,12 @@ for i in $RANGE; do
     cat testcases2/input/test${i}.micro | micro | diff -y - testcases2/output/test${i}.out
   else
     COLOR=""
-    echo "PASSED============================"
+    echo "${i}PASSED============================"
+    if valgrind --leak-check=yes micro < testcases2/input/test${i}.micro &> /dev/null ; then
+      echo "VALGRIND PASSED"
+    else
+      echo "VALGRIND FAILED OH NO"
+    fi
   fi
 
 done

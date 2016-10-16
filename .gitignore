@@ -341,3 +341,5 @@ __pycache__/
 micro
 generated/*
 *.swp
+
+testcases3/tiny

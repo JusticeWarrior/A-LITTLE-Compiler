@@ -5,7 +5,7 @@
 
 class Operand{
 	public:
-		enum Types { REGISTER, INTLITERAL, STRINGLITERAL, FLOATLITERAL, LABEL };
+		enum Types { REGISTER, INTLITERAL, STRINGLITERAL, FLOATLITERAL, LABEL, VARIABLE };
 		Operand(Types type, std::string value);
 		Operand(Types type, int reg);
 		std::string ToString();

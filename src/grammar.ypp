@@ -299,7 +299,21 @@
     : assign_expr SEMICOLON 
     ;
   assign_expr
-    : id COLONEQUAL expr {free($1);} 
+    : id COLONEQUAL expr {
+      std::stringstream ss;
+      IRI* iri;
+      DataObject* dest = new DataObject(*parser.table_factory.get_symbol($1));
+      DataObject* src = static_cast<DataObject*>($3);
+      if (dest->data_type == DataObject::FLOAT)
+	iri = IRI::create(IRI::STOREF, src->get_operand(), dest->get_operand());
+      else
+	iri = IRI::create(IRI::STOREI, src->get_operand(), dest->get_operand());
+      {
+	iri->PrintIRI(&ss);
+	std::cerr << ss.rdbuf();
+      }
+      free($1);
+    } 
     ;
   read_stmt
     : READ PARANTHLEFT id_list PARANTHRIGHT SEMICOLON 
@@ -323,7 +337,7 @@
       {
 	if (iri){
 	  iri->PrintIRI(&ss);
-	  std::cout << ss.rdbuf() << std::endl;
+	  std::cerr << ss.rdbuf();
 	}
       }
       $$ = result;
@@ -341,7 +355,7 @@
       {
 	if (iri){
 	  iri->PrintIRI(&ss);
-	  std::cout << ss.rdbuf() << std::endl;
+	  std::cerr << ss.rdbuf();
 	}
       }
       new_half_expr = new half_expr_t($3, result);
@@ -362,7 +376,7 @@
       {
 	if (iri){
 	  iri->PrintIRI(&ss);
-	  std::cout << ss.rdbuf() << std::endl;
+	  std::cerr << ss.rdbuf();
 	}
       }
       $$ = result;
@@ -380,7 +394,7 @@
       {
 	if (iri){
 	  iri->PrintIRI(&ss);
-	  std::cout << ss.rdbuf() << std::endl;
+	  std::cerr << ss.rdbuf();
 	}
       }
       new_half_expr = new half_expr_t($3, result);
@@ -421,7 +435,7 @@
 	IRI* iri = IRI::create(IRI::STOREI, int_literal, data_object->get_operand());
 	iri->PrintIRI(&ss);
 	{
-	  std::cerr << ss.rdbuf() << std::endl;
+	  std::cerr << ss.rdbuf();
 	}
 	$$ = static_cast<void*>(data_object);
       }
@@ -432,7 +446,7 @@
 	IRI* iri = IRI::create(IRI::STOREF, int_literal, data_object->get_operand());
 	{
 	  iri->PrintIRI(&ss);
-	  std::cerr << ss.rdbuf() << std::endl;
+	  std::cerr << ss.rdbuf();
 	}
 	$$ = static_cast<void*>(data_object);
       }

@@ -23,7 +23,7 @@ Operand DataObject::get_operand() {
   if (reg_type == TEMP)
     return Operand(Operand::REGISTER, number);
   else
-    return Operand(Operand::REGISTER, name);
+    return Operand(Operand::VARIABLE, name);
 }
 
 IRI* DataObject::get_IRI(DataObject* lhs, int op, DataObject* rhs, DataObject* result){
@@ -62,4 +62,4 @@ DataObject* DataObject::evaluate_expression(half_expr_t* half_expr, IRI** iri, D
     }
   } 
 
-int DataObject::temp_num = 0;
+int DataObject::temp_num = 1;

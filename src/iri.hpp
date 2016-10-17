@@ -11,7 +11,7 @@ class IRI{
 		enum Types {
 			STOREI, WRITEI, ADDI, MULTI, SUBI,
 			DIVI, STOREF, WRITEF, ADDF, MULTF,
-			SUBF, DIVF
+			SUBF, DIVF, READF, READI
 		};
 
 		IRI(Types type, Operand op1);

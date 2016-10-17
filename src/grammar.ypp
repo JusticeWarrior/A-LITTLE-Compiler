@@ -316,10 +316,52 @@
     } 
     ;
   read_stmt
-    : READ PARANTHLEFT id_list PARANTHRIGHT SEMICOLON 
+    : READ PARANTHLEFT id_list PARANTHRIGHT SEMICOLON {
+      // For each name in the id_list, generate a read statement
+      std::stringstream ss;
+      Symbol* symbol;
+      IRI* iri;
+      str_arr_t* str_arr = static_cast<str_arr_t*>($3);
+      str_arr_t::iterator it;
+      for (it = str_arr->begin(); it != str_arr->end(); it++) {
+	symbol = parser.table_factory.get_symbol(*it);
+	if (!symbol)
+	  throw "Symbol not found!";
+	DataObject data_object = DataObject(*symbol);
+	iri = IRI::create(
+	  data_object.data_type == DataObject::FLOAT ? IRI::READF : IRI::READI,
+	  data_object.get_operand()
+	);
+	{
+	  iri->PrintIRI(&ss);
+	  std::cerr << ss.rdbuf();
+	}
+      }
+    }
     ;
   write_stmt
-    : WRITE PARANTHLEFT id_list PARANTHRIGHT SEMICOLON 
+    : WRITE PARANTHLEFT id_list PARANTHRIGHT SEMICOLON {
+      // For each name in the id_list, generate a write statement
+      std::stringstream ss;
+      Symbol* symbol;
+      IRI* iri;
+      str_arr_t* str_arr = static_cast<str_arr_t*>($3);
+      str_arr_t::iterator it;
+      for (it = str_arr->begin(); it != str_arr->end(); it++) {
+	symbol = parser.table_factory.get_symbol(*it);
+	if (!symbol)
+	  throw "Symbol not found!";
+	DataObject data_object = DataObject(*symbol);
+	iri = IRI::create(
+	  data_object.data_type == DataObject::FLOAT ? IRI::WRITEF : IRI::WRITEI,
+	  data_object.get_operand()
+	);
+	{
+	  iri->PrintIRI(&ss);
+	  std::cerr << ss.rdbuf();
+	}
+      }
+    }
     ;
   return_stmt
     : RETURN expr SEMICOLON 

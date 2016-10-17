@@ -17,10 +17,12 @@ IRI::IRI(Types type, Operand op1, Operand op2, Operand op3)
 	}
 
 void IRI::PrintIRI(std::stringstream* stream) {
-	//*stream << "Symbol table " << name << std::endl;
-	
-	//if (Type == Types.STOREI)
-		//*stream << ";STOREI " << name << std::endl;
+	if (Type == STOREI)
+		*stream << ";STOREI " << Operands[0].ToString() << " " << Operands[1].ToString() << std::endl;
+	if (Type == WRITEI)
+		*stream << ";WRITEI " << Operands[0].ToString() << std::endl;
+	if (Type == ADDI)
+		*stream << ";ADDI " << Operands[0].ToString() << " " << Operands[1].ToString() << " " << Operands[2].ToString() << std::endl;
 }
 
 void IRI::PrintAssembly(std::stringstream* stream) {

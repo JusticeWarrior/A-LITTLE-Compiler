@@ -2,7 +2,7 @@
 #define _IRI_H_
 
 #include "operand.hpp"
-#include <list>
+#include <vector>
 #include <string>
 #include <sstream>
 
@@ -31,7 +31,7 @@ class IRI{
 		void PrintIRI(std::stringstream* stream);
 		void PrintAssembly(std::stringstream* stream);
 
-		std::list<Operand> Operands;
+		std::vector<Operand> Operands;
 		Types Type;
 };
 

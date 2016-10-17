@@ -8,6 +8,8 @@ class Operand{
 		enum Types { REGISTER, INTLITERAL, STRINGLITERAL, FLOATLITERAL, LABEL };
 		Operand(Types type, std::string value);
 		Operand(Types type, int reg);
+		std::string ToString();
+		std::string ToAssemblyString();
 		Types Type;
 		std::string Value;
 		int Reg;

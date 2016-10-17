@@ -31,7 +31,7 @@ class IRI{
 		void PrintIRI(std::stringstream* stream);
 		void PrintAssembly(std::stringstream* stream);
 
-		list<Operand> Operands;
+		std::list<Operand> Operands;
 		Types Type;
 };
 

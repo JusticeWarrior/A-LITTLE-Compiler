@@ -19,4 +19,11 @@ DataObject::DataObject(DataType type) :
   number(temp_num++)
 {}
 
+Operand DataObject::get_operand() {
+  if (reg_type == TEMP)
+    return Operand(Operand::REGISTER, number);
+  else
+    return Operand(Operand::REGISTER, name);
+}
+
 int DataObject::temp_num = 0;

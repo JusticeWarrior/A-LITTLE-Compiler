@@ -1,4 +1,5 @@
 #include "symbol.hpp"
+#include "operand.hpp"
 
 // This class is a dataobject.  It is meant to represent the type and name of the storage location
 // of a literal, the results of an expression, the results of a function call, or a symbol
@@ -27,6 +28,8 @@ struct DataObject {
 
   // Initialize temp type
   DataObject(DataType type);
+
+  Operand get_operand();
 
 };
 

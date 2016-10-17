@@ -1,5 +1,6 @@
 #include "symbol.hpp"
 #include "operand.hpp"
+#include "iri.hpp"
 
 // This class is a dataobject.  It is meant to represent the type and name of the storage location
 // of a literal, the results of an expression, the results of a function call, or a symbol
@@ -31,12 +32,14 @@ struct DataObject {
 
   Operand get_operand();
 
+  // Null pointer indicates error
+  static IRI* get_IRI(DataObject* lhs, int op, DataObject* rhs);
+
+
 };
 
 // Arithmetic operations
-struct Operation {
-  enum Type {
-    ADD, SUB, MUL, DIV
-  };
-  Type type;
+enum ArithmeticOperation{
+  ADD, SUB, MUL, DIV
 };
+

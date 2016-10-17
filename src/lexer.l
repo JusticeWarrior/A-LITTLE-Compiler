@@ -58,9 +58,9 @@ TRUE       {PRINT_INFO("KEYWORD", YYText()); return TRUE      ;}
 FALSE      {PRINT_INFO("KEYWORD", YYText()); return FALSE     ;}
 
 
-{identifier}	  {PRINT_INFO("IDENTIFIER", YYText()); yylval.str_val = strdup(YYText()); return(IDENTIFIER);}
-{floatliteral}	  {PRINT_INFO("FLOATLITERAL", YYText()); return(FLOATLITERAL);}
-{intliteral}	  {PRINT_INFO("INTLITERAL", YYText()); return (INTLITERAL);}
+{identifier}	  {PRINT_INFO("IDENTIFIER", YYText());   yylval.str_val = strdup(YYText()); return(IDENTIFIER);}
+{floatliteral}	  {PRINT_INFO("FLOATLITERAL", YYText()); yylval.str_val = strdup(YYText()); return(FLOATLITERAL);}
+{intliteral}	  {PRINT_INFO("INTLITERAL", YYText());   yylval.str_val = strdup(YYText()); return (INTLITERAL);}
 {stringliteral}	  {PRINT_INFO("STRINGLITERAL",YYText()); yylval.str_val = strdup(YYText()); return (STRINGLITERAL);}
 {comment}	  ;
 {operator}	  {

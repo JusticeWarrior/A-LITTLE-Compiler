@@ -8,12 +8,14 @@
   #include "scanner.hpp"
   #include "parser.hpp"
   #include "symbol.hpp"
+  #include "data_object.hpp"
 
   #undef yylex
   #define yylex scanner.yylex
 
   #define str_arr_t std::vector<char*>
   #define sym_arr_t std::list<Symbol*>
+  #define half_expr_t std::pair<int, DataObject*>
 
   #undef yyparse
   //#define yyparse LittleParser::yyparse
@@ -36,8 +38,22 @@
   int int_val;
   char* str_val;
   void* str_arr;
+
+  // std::vector<Symbol*>*
   void* sym_arr;
+
+  // Symbol*
   void* sym;
+
+  // Operation enum
+  int op;
+
+  // DataObject*
+  void* data_obj;
+
+  // std::pair<op, DataObject*>*
+  void* half_expr;
+
 
 }
 
@@ -54,7 +70,7 @@
 %token    <str_val> READ
 %token    <str_val> WRITE
 %token    <str_val> RETURN
-%token    <int_val> INTLITERAL
+%token    <str_val> INTLITERAL
 %token    <str_val> FLOATLITERAL
 %token    <str_val> PLUS
 %token    <str_val> MINUS
@@ -91,6 +107,16 @@
 %type	  <sym_arr> param_decl_tail
 %type	  <sym>	    param_decl
 %type     <int_val> var_type
+
+%type	  <op>	    mulop
+%type     <op>	    addop
+
+%type	  <data_obj>	    primary
+%type	  <data_obj>	    expr
+%type	  <data_obj>	    factor
+
+%type	  <half_expr> factor_prefix
+%type	  <half_expr> expr_prefix
 
 %%
   /* Program */
@@ -290,15 +316,21 @@
     : expr_prefix factor 
     ;
   expr_prefix
-    : expr_prefix factor addop 
-    | 
+    : expr_prefix factor addop {
+	half_expr_t* first_half = static_cast<half_expr_t*>($1);
+      }
+    | {
+	$$ = static_cast<void*>(new half_expr_t(0,(void*)0));
+      }
     ;
   factor
     : factor_prefix postfix_expr 
     ;
   factor_prefix
     : factor_prefix postfix_expr mulop 
-    | 
+    | {
+	$$ = static_cast<void*>(new half_expr_t(0,(void*)0));
+      }
     ;
   postfix_expr
     : primary 
@@ -316,18 +348,37 @@
     | 
     ;
   primary
-    : PARANTHLEFT expr PARANTHRIGHT 
-    | id {free($1);}
-    | INTLITERAL 
-    | FLOATLITERAL 
+    : PARANTHLEFT expr PARANTHRIGHT {$$ = $2;} 
+    | id {
+	Symbol* sym = parser.table_factory.get_symbol($1);
+	if (!sym)
+	  /* problems */ ;
+	$$ = static_cast<void*>(new DataObject(*sym));
+	free($1);
+      }
+    | INTLITERAL {
+	Operand int_literal = Operand(Operand::INTLITERAL, $1);
+	DataObject* data_object = new DataObject(DataObject::INT); // Store this in a temp register
+	// [???] Push to irilist data_object->get_operand()
+	std::cout << "STOREI " << $1 << ", T" << data_object->number << std::endl;
+	$$ = static_cast<void*>(data_object);
+      }
+    | FLOATLITERAL {
+	Operand int_literal = Operand(Operand::FLOATLITERAL, $1);
+	DataObject* data_object = new DataObject(DataObject::FLOAT); // Store this in a temp register
+	// [???] Push to irilist data_object->get_operand()
+	std::cout << "STOREF " << $1 << ", T" << data_object->number << std::endl;
+	$$ = static_cast<void*>(data_object);
+      }
+
     ;
   addop
-    : PLUS 
-    | MINUS 
+    : PLUS {$$ = ADD;}
+    | MINUS {$$ = SUB;}
     ;
   mulop
-  : MULTIPLY 
-  | DIVIDE 
+  : MULTIPLY {$$ = MUL;}
+  | DIVIDE {$$ = DIV;}
   ;
 
   /* Complex Statements and Condition */

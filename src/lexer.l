@@ -104,10 +104,14 @@ FALSE      {PRINT_INFO("KEYWORD", YYText()); return FALSE     ;}
 %%
 
 int main(){
+  std::stringstream ss;
   LittleParser parser = LittleParser(&std::cin);
   parser.parse();
-  if (parser.accepted())
-    std::cout << parser.table_factory.ss->rdbuf();
+  if (parser.accepted()) {
+    parser.print_ir(ss);
+    parser.print_assembly(ss);
+    std::cout << ss.rdbuf();
+  }
   else
     std::cout << parser.table_factory.ss->rdbuf();
 }

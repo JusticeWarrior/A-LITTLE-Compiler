@@ -310,7 +310,8 @@
 	iri = IRI::create(IRI::STOREI, src->get_operand(), dest->get_operand());
       {
 	iri->PrintIRI(&ss);
-	std::cerr << ss.rdbuf();
+	// std::cerr << ss.rdbuf();
+	parser.iri_list_push_back(iri);
       }
       free($1);
     } 
@@ -334,7 +335,8 @@
 	);
 	{
 	  iri->PrintIRI(&ss);
-	  std::cerr << ss.rdbuf();
+	  // std::cerr << ss.rdbuf();
+	  parser.iri_list_push_back(iri);
 	}
       }
     }
@@ -358,7 +360,8 @@
 	);
 	{
 	  iri->PrintIRI(&ss);
-	  std::cerr << ss.rdbuf();
+	  // std::cerr << ss.rdbuf();
+	  parser.iri_list_push_back(iri);
 	}
       }
     }
@@ -379,7 +382,8 @@
       {
 	if (iri){
 	  iri->PrintIRI(&ss);
-	  std::cerr << ss.rdbuf();
+	  // std::cerr << ss.rdbuf();
+	  parser.iri_list_push_back(iri);
 	}
       }
       $$ = result;
@@ -397,7 +401,8 @@
       {
 	if (iri){
 	  iri->PrintIRI(&ss);
-	  std::cerr << ss.rdbuf();
+	  // std::cerr << ss.rdbuf();
+	  parser.iri_list_push_back(iri);
 	}
       }
       new_half_expr = new half_expr_t($3, result);
@@ -418,7 +423,8 @@
       {
 	if (iri){
 	  iri->PrintIRI(&ss);
-	  std::cerr << ss.rdbuf();
+	  // std::cerr << ss.rdbuf();
+	  parser.iri_list_push_back(iri);
 	}
       }
       $$ = result;
@@ -436,7 +442,8 @@
       {
 	if (iri){
 	  iri->PrintIRI(&ss);
-	  std::cerr << ss.rdbuf();
+	  // std::cerr << ss.rdbuf();
+	  parser.iri_list_push_back(iri);
 	}
       }
       new_half_expr = new half_expr_t($3, result);
@@ -477,7 +484,8 @@
 	IRI* iri = IRI::create(IRI::STOREI, int_literal, data_object->get_operand());
 	iri->PrintIRI(&ss);
 	{
-	  std::cerr << ss.rdbuf();
+	  // std::cerr << ss.rdbuf();
+	  parser.iri_list_push_back(iri);
 	}
 	$$ = static_cast<void*>(data_object);
       }
@@ -488,7 +496,8 @@
 	IRI* iri = IRI::create(IRI::STOREF, int_literal, data_object->get_operand());
 	{
 	  iri->PrintIRI(&ss);
-	  std::cerr << ss.rdbuf();
+	  //std::cerr << ss.rdbuf();
+	  parser.iri_list_push_back(iri);
 	}
 	$$ = static_cast<void*>(data_object);
       }

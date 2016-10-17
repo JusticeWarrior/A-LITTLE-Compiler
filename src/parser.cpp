@@ -67,3 +67,21 @@ void LittleParser::parse(){
 bool LittleParser::accepted(){
   return accept;
 }
+
+void LittleParser::iri_list_push_back(IRI* iri) {
+  iri_list.push_back(iri);
+}
+
+void LittleParser::print_ir(std::stringstream& ss) {
+  std::list<IRI*>::iterator it;
+  for (it = iri_list.begin(); it != iri_list.end(); it++) {
+    (**it).PrintIRI(&ss);
+  }
+}
+
+void LittleParser::print_assembly(std::stringstream& ss) {
+  std::list<IRI*>::iterator it;
+  for (it = iri_list.begin(); it != iri_list.end(); it++) {
+    (**it).PrintAssembly(&ss);
+  }
+}

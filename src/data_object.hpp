@@ -6,15 +6,15 @@
 struct DataObject {
   
   // Type definitions
-  enum DataType {INT, FLOAT};
+  enum DataType {INT, FLOAT, STRING};
   enum RegisterType {TEMP, VAR};
 
   // Static
   static int temp_num;
 
   // Members
-  std::string name;
   DataType data_type;
+  RegisterType reg_type;
 
   // Relevant only for VAR
   std::string name;
@@ -34,6 +34,6 @@ struct DataObject {
 struct Operation {
   enum Type {
     ADD, SUB, MUL, DIV
-  }
+  };
   Type type;
 };

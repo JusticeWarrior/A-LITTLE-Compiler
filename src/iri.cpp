@@ -46,7 +46,7 @@ void IRI::PrintIRI(std::stringstream* stream) {
 	else if (Type == DIVF)
 		*stream << ";DIVF " << Operands[0].ToString() << " " << Operands[1].ToString() << " " << Operands[2].ToString() << std::endl;
 	else
-		throw "Problems!";
+		throw std::string("Unrecognized IRI");
 }
 
 void IRI::PrintAssembly(std::stringstream* stream) {
@@ -74,7 +74,7 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 		*stream << "divi " << Operands[1].ToAssemblyString() << " r0" << std::endl;
 		*stream << "move r0 " << Operands[2].ToAssemblyString() << std::endl;
 	}
-	if (Type == STOREF)
+	else if (Type == STOREF)
 		*stream << "move " << Operands[0].ToAssemblyString() << " " << Operands[1].ToAssemblyString() << std::endl;
 	else if (Type == WRITEF)
 		*stream << "sys writer " << Operands[0].ToAssemblyString() << std::endl;
@@ -99,5 +99,5 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 		*stream << "move r0 " << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else
-		throw "Computer over! Virus = 'very yes'";
+		throw std::string("Unrecognized assembly directive!");
 }

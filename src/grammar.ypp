@@ -4,6 +4,8 @@
   #include <vector>
   #include <stdint.h>
   #include <typeinfo>
+  // Debugging only
+  #include <sstream>
   #include "tokens.hpp"
   #include "scanner.hpp"
   #include "parser.hpp"
@@ -15,15 +17,11 @@
 
   #define str_arr_t std::vector<char*>
   #define sym_arr_t std::list<Symbol*>
-  #define half_expr_t std::pair<int, DataObject*>
+  //#define half_expr_t std::pair<int, DataObject*>
 
   #undef yyparse
-  //#define yyparse LittleParser::yyparse
-  //#undef yyerror
-  //#define yyerror LittleParser::error
-
-  //#undef YYPARSE_PARAM
-  // delete me
+  //#define half_expr_is_valid(half_expr) \
+  //  ((half_expr).second != 0)
   int block_num=1;
 
   void yyerror (LittleParser& parser, LittleScanner& scanner, const char* err);
@@ -114,6 +112,8 @@
 %type	  <data_obj>	    primary
 %type	  <data_obj>	    expr
 %type	  <data_obj>	    factor
+%type	  <data_obj>	    postfix_expr
+%type	  <data_obj>	    call_expr
 
 %type	  <half_expr> factor_prefix
 %type	  <half_expr> expr_prefix
@@ -313,31 +313,89 @@
 
   /* Expressions */
   expr
-    : expr_prefix factor 
+    : expr_prefix factor {
+      std::stringstream ss;
+      half_expr_t* half_expr = static_cast<half_expr_t*>($1);
+      IRI* iri;
+      DataObject *result, *rhs;
+      rhs = static_cast<DataObject*>($2);
+      result = DataObject::evaluate_expression(half_expr, &iri, rhs);
+      {
+	if (iri){
+	  iri->PrintIRI(&ss);
+	  std::cout << ss.rdbuf() << std::endl;
+	}
+      }
+      $$ = result;
+      }
     ;
   expr_prefix
     : expr_prefix factor addop {
-	half_expr_t* first_half = static_cast<half_expr_t*>($1);
+      std::stringstream ss;
+      half_expr_t* half_expr = static_cast<half_expr_t*>($1);
+      half_expr_t* new_half_expr;
+      IRI* iri;
+      DataObject *result, *rhs;
+      rhs = static_cast<DataObject*>($2);
+      result = DataObject::evaluate_expression(half_expr, &iri, rhs);
+      {
+	if (iri){
+	  iri->PrintIRI(&ss);
+	  std::cout << ss.rdbuf() << std::endl;
+	}
       }
+      new_half_expr = new half_expr_t($3, result);
+      $$ = static_cast<void*>(new_half_expr);
+    }
     | {
-	$$ = static_cast<void*>(new half_expr_t(0,(void*)0));
+	$$ = static_cast<void*>(new half_expr_t(0,(DataObject*)0));
       }
     ;
   factor
-    : factor_prefix postfix_expr 
+    : factor_prefix postfix_expr {
+      std::stringstream ss;
+      half_expr_t* half_expr = static_cast<half_expr_t*>($1);
+      IRI* iri;
+      DataObject *result, *rhs;
+      rhs = static_cast<DataObject*>($2);
+      result = DataObject::evaluate_expression(half_expr, &iri, rhs);
+      {
+	if (iri){
+	  iri->PrintIRI(&ss);
+	  std::cout << ss.rdbuf() << std::endl;
+	}
+      }
+      $$ = result;
+    }
     ;
   factor_prefix
-    : factor_prefix postfix_expr mulop 
+    : factor_prefix postfix_expr mulop {
+      std::stringstream ss;
+      half_expr_t* half_expr = static_cast<half_expr_t*>($1);
+      half_expr_t* new_half_expr;
+      IRI* iri;
+      DataObject *result, *rhs;
+      rhs = static_cast<DataObject*>($2);
+      result = DataObject::evaluate_expression(half_expr, &iri, rhs);
+      {
+	if (iri){
+	  iri->PrintIRI(&ss);
+	  std::cout << ss.rdbuf() << std::endl;
+	}
+      }
+      new_half_expr = new half_expr_t($3, result);
+      $$ = static_cast<void*>(new_half_expr);
+    }
     | {
-	$$ = static_cast<void*>(new half_expr_t(0,(void*)0));
+	$$ = static_cast<void*>(new half_expr_t(0,(DataObject*)0));
       }
     ;
   postfix_expr
     : primary 
-    | call_expr 
+    | call_expr
     ;
   call_expr
-    : id PARANTHLEFT expr_list PARANTHRIGHT {free($1);} 
+    : id PARANTHLEFT expr_list PARANTHRIGHT {free($1); $$=0;} 
     ;
   expr_list
     : expr expr_list_tail 
@@ -357,17 +415,25 @@
 	free($1);
       }
     | INTLITERAL {
+	std::stringstream ss;
 	Operand int_literal = Operand(Operand::INTLITERAL, $1);
 	DataObject* data_object = new DataObject(DataObject::INT); // Store this in a temp register
-	// [???] Push to irilist data_object->get_operand()
-	std::cout << "STOREI " << $1 << ", T" << data_object->number << std::endl;
+	IRI* iri = IRI::create(IRI::STOREI, int_literal, data_object->get_operand());
+	iri->PrintIRI(&ss);
+	{
+	  std::cerr << ss.rdbuf() << std::endl;
+	}
 	$$ = static_cast<void*>(data_object);
       }
     | FLOATLITERAL {
+	std::stringstream ss;
 	Operand int_literal = Operand(Operand::FLOATLITERAL, $1);
 	DataObject* data_object = new DataObject(DataObject::FLOAT); // Store this in a temp register
-	// [???] Push to irilist data_object->get_operand()
-	std::cout << "STOREF " << $1 << ", T" << data_object->number << std::endl;
+	IRI* iri = IRI::create(IRI::STOREF, int_literal, data_object->get_operand());
+	{
+	  iri->PrintIRI(&ss);
+	  std::cerr << ss.rdbuf() << std::endl;
+	}
 	$$ = static_cast<void*>(data_object);
       }
 

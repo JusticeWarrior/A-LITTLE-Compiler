@@ -12,6 +12,7 @@ class Table{
 		void InsertSymbol(Symbol sym);
 		Symbol* GetSymbol(std::string _name);
 		void PrintSymbols(std::stringstream* stream);
+		void PrintDeclarations(std::stringstream* stream);
 	private:
 		bool hasBeenPrinted;
 		std::string name;

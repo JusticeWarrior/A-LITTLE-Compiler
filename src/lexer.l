@@ -109,10 +109,11 @@ int main(){
   parser.parse();
   if (parser.accepted()) {
     parser.print_ir(ss);
+    parser.table_factory.print_global_declarations(ss);
     parser.print_assembly(ss);
-    std::cout << ss.rdbuf();
+    std::cout << ss.rdbuf() << std::endl;
   }
   else
-    std::cout << parser.table_factory.ss->rdbuf();
+    std::cout << "Problems!" << std::endl;
 }
 

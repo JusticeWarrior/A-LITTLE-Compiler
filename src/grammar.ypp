@@ -300,7 +300,6 @@
     ;
   assign_expr
     : id COLONEQUAL expr {
-      std::stringstream ss;
       IRI* iri;
       DataObject* dest = new DataObject(*parser.table_factory.get_symbol($1));
       DataObject* src = static_cast<DataObject*>($3);
@@ -308,11 +307,10 @@
 	iri = IRI::create(IRI::STOREF, src->get_operand(), dest->get_operand());
       else
 	iri = IRI::create(IRI::STOREI, src->get_operand(), dest->get_operand());
-      {
-	iri->PrintIRI(&ss);
-	// std::cerr << ss.rdbuf();
-	parser.iri_list_push_back(iri);
-      }
+      parser.iri_list_push_back(iri);
+
+      delete dest;
+      delete src;
       free($1);
     } 
     ;

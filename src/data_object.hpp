@@ -1,3 +1,6 @@
+#ifndef _DATA_OBJECT_H_
+#define _DATA_OBJECT_H_
+
 #include "symbol.hpp"
 #include "operand.hpp"
 #include "iri.hpp"
@@ -52,3 +55,4 @@ enum ArithmeticOperation{
   ADD, SUB, MUL, DIV
 };
 
+#endif

@@ -303,21 +303,19 @@
       IRI* iri;
       DataObject* dest = new DataObject(*parser.table_factory.get_symbol($1));
       DataObject* src = static_cast<DataObject*>($3);
+      parser.data_object_set.register_object(dest);
       if (dest->data_type == DataObject::FLOAT)
 	iri = IRI::create(IRI::STOREF, src->get_operand(), dest->get_operand());
       else
 	iri = IRI::create(IRI::STOREI, src->get_operand(), dest->get_operand());
       parser.iri_list_push_back(iri);
 
-      delete dest;
-      delete src;
       free($1);
     } 
     ;
   read_stmt
     : READ PARANTHLEFT id_list PARANTHRIGHT SEMICOLON {
       // For each name in the id_list, generate a read statement
-      std::stringstream ss;
       Symbol* symbol;
       IRI* iri;
       str_arr_t* str_arr = static_cast<str_arr_t*>($3);
@@ -331,18 +329,13 @@
 	  data_object.data_type == DataObject::FLOAT ? IRI::READF : IRI::READI,
 	  data_object.get_operand()
 	);
-	{
-	  iri->PrintIRI(&ss);
-	  // std::cerr << ss.rdbuf();
-	  parser.iri_list_push_back(iri);
-	}
+	parser.iri_list_push_back(iri);
       }
     }
     ;
   write_stmt
     : WRITE PARANTHLEFT id_list PARANTHRIGHT SEMICOLON {
       // For each name in the id_list, generate a write statement
-      std::stringstream ss;
       Symbol* symbol;
       IRI* iri;
       str_arr_t* str_arr = static_cast<str_arr_t*>($3);
@@ -356,11 +349,7 @@
 	  data_object.data_type == DataObject::FLOAT ? IRI::WRITEF : IRI::WRITEI,
 	  data_object.get_operand()
 	);
-	{
-	  iri->PrintIRI(&ss);
-	  // std::cerr << ss.rdbuf();
-	  parser.iri_list_push_back(iri);
-	}
+	parser.iri_list_push_back(iri);
       }
     }
     ;
@@ -371,84 +360,74 @@
   /* Expressions */
   expr
     : expr_prefix factor {
-      std::stringstream ss;
       half_expr_t* half_expr = static_cast<half_expr_t*>($1);
       IRI* iri;
       DataObject *result, *rhs;
       rhs = static_cast<DataObject*>($2);
       result = DataObject::evaluate_expression(half_expr, &iri, rhs);
-      {
-	if (iri){
-	  iri->PrintIRI(&ss);
-	  // std::cerr << ss.rdbuf();
-	  parser.iri_list_push_back(iri);
-	}
+      parser.data_object_set.register_object(result);
+      if (iri){
+	parser.iri_list_push_back(iri);
       }
       $$ = result;
       }
     ;
   expr_prefix
     : expr_prefix factor addop {
-      std::stringstream ss;
       half_expr_t* half_expr = static_cast<half_expr_t*>($1);
       half_expr_t* new_half_expr;
       IRI* iri;
       DataObject *result, *rhs;
       rhs = static_cast<DataObject*>($2);
       result = DataObject::evaluate_expression(half_expr, &iri, rhs);
-      {
+      parser.data_object_set.register_object(result);
 	if (iri){
-	  iri->PrintIRI(&ss);
-	  // std::cerr << ss.rdbuf();
 	  parser.iri_list_push_back(iri);
 	}
-      }
       new_half_expr = new half_expr_t($3, result);
+      parser.half_expr_set.register_object(new_half_expr);
       $$ = static_cast<void*>(new_half_expr);
     }
     | {
-	$$ = static_cast<void*>(new half_expr_t(0,(DataObject*)0));
+	half_expr_t* half_expr = new half_expr_t(0, (DataObject*)0);
+	parser.half_expr_set.register_object(half_expr);
+	$$ = static_cast<void*>(half_expr);
       }
     ;
   factor
     : factor_prefix postfix_expr {
-      std::stringstream ss;
       half_expr_t* half_expr = static_cast<half_expr_t*>($1);
       IRI* iri;
       DataObject *result, *rhs;
       rhs = static_cast<DataObject*>($2);
       result = DataObject::evaluate_expression(half_expr, &iri, rhs);
-      {
+      parser.data_object_set.register_object(result);
 	if (iri){
-	  iri->PrintIRI(&ss);
-	  // std::cerr << ss.rdbuf();
 	  parser.iri_list_push_back(iri);
 	}
-      }
       $$ = result;
     }
     ;
   factor_prefix
     : factor_prefix postfix_expr mulop {
-      std::stringstream ss;
       half_expr_t* half_expr = static_cast<half_expr_t*>($1);
       half_expr_t* new_half_expr;
       IRI* iri;
       DataObject *result, *rhs;
       rhs = static_cast<DataObject*>($2);
       result = DataObject::evaluate_expression(half_expr, &iri, rhs);
-      {
-	if (iri){
-	  iri->PrintIRI(&ss);
-	  // std::cerr << ss.rdbuf();
-	  parser.iri_list_push_back(iri);
-	}
+      parser.data_object_set.register_object(result);
+      if (iri){
+	parser.iri_list_push_back(iri);
       }
       new_half_expr = new half_expr_t($3, result);
+      parser.half_expr_set.register_object(new_half_expr);
       $$ = static_cast<void*>(new_half_expr);
     }
     | {
-	$$ = static_cast<void*>(new half_expr_t(0,(DataObject*)0));
+	half_expr_t* half_expr = new half_expr_t(0, (DataObject*)0);
+	parser.half_expr_set.register_object(half_expr);
+	$$ = static_cast<void*>(half_expr);
       }
     ;
   postfix_expr
@@ -470,34 +449,31 @@
     : PARANTHLEFT expr PARANTHRIGHT {$$ = $2;} 
     | id {
 	Symbol* sym = parser.table_factory.get_symbol($1);
+	DataObject* data_object;
 	if (!sym)
-	  /* problems */ ;
-	$$ = static_cast<void*>(new DataObject(*sym));
+	  throw "symbol not in table!";
+	data_object = new DataObject(*sym);
+	parser.data_object_set.register_object(data_object);
+	$$ = static_cast<void*>(data_object);
 	free($1);
       }
     | INTLITERAL {
-	std::stringstream ss;
 	Operand int_literal = Operand(Operand::INTLITERAL, $1);
 	DataObject* data_object = new DataObject(DataObject::INT); // Store this in a temp register
+	parser.data_object_set.register_object(data_object);
 	IRI* iri = IRI::create(IRI::STOREI, int_literal, data_object->get_operand());
-	iri->PrintIRI(&ss);
-	{
-	  // std::cerr << ss.rdbuf();
-	  parser.iri_list_push_back(iri);
-	}
+	parser.iri_list_push_back(iri);
 	$$ = static_cast<void*>(data_object);
+	free($1);
       }
     | FLOATLITERAL {
-	std::stringstream ss;
 	Operand int_literal = Operand(Operand::FLOATLITERAL, $1);
 	DataObject* data_object = new DataObject(DataObject::FLOAT); // Store this in a temp register
+	parser.data_object_set.register_object(data_object);
 	IRI* iri = IRI::create(IRI::STOREF, int_literal, data_object->get_operand());
-	{
-	  iri->PrintIRI(&ss);
-	  //std::cerr << ss.rdbuf();
-	  parser.iri_list_push_back(iri);
-	}
+	parser.iri_list_push_back(iri);
 	$$ = static_cast<void*>(data_object);
+	free($1);
       }
 
     ;

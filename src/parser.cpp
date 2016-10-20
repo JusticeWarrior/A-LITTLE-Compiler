@@ -41,6 +41,13 @@ LittleParser::~LittleParser(){
     // now delete the array
     delete *sym_arr_it;
   }
+
+// clean up the iri list
+  std::list<IRI*>::iterator iri_it;
+  for(iri_it = iri_list.begin(); iri_it != iri_list.end(); iri_it++) {
+    delete *iri_it;
+  }
+
 }
 
 void LittleParser::error(const char* err){

@@ -10,7 +10,7 @@ all: group micro
 group:
 	@echo "Jordan Huffaker jhuffak, Eric Colter coltere"
 micro: generated/flex.yy.cpp generated/grammar.tab.cpp objects
-	@cd objects && g++ -std=c++0x -g -I../src -I../generated ../generated/*.cpp ../src/*.cpp -c
+	#@cd objects && g++ -std=c++0x -g -I../src -I../generated ../generated/*.cpp ../src/*.cpp -c
 	@g++ -g -std=c++0x -Isrc -Igenerated generated/*.cpp src/*.cpp -o micro
 
 

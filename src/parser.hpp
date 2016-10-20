@@ -3,7 +3,9 @@
 
 #include "scanner.hpp"
 #include "table_factory.hpp"
+#include "data_object.hpp"
 #include "iri.hpp"
+#include "memory_set.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -32,6 +34,9 @@ class LittleParser{
     // Memory management functions
     void register_str_arr(std::vector<char*>*);
     void register_sym_arr(std::list<Symbol*>*);
+    MemorySet<half_expr_t> half_expr_set;
+    MemorySet<DataObject>  data_object_set;
+
 
     // Global parse data structures
     TableFactory table_factory;

@@ -54,13 +54,9 @@ DataObject* DataObject::evaluate_expression(half_expr_t* half_expr, IRI** iri, D
     if (half_expr_is_valid(*half_expr)) {
       result = new DataObject(lhs->data_type);
       *iri = DataObject::get_IRI(lhs, op, rhs, result);
-      delete rhs;
-      delete lhs;
-      delete half_expr;
       return result;
     }
     else {
-      delete half_expr;
       *iri = 0;
       return rhs;
     }

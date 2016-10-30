@@ -41,3 +41,11 @@ void Table::PrintSymbols(std::stringstream* stream) {
 
 	hasBeenPrinted = true;
 }
+
+
+void Table::PrintDeclarations(std::stringstream* stream) { 
+  std::list<Symbol>::iterator it;
+  for (it = symbols.begin(); it != symbols.end(); it++) {
+    *stream << "var " << (*it).Name << std::endl;
+  }
+}

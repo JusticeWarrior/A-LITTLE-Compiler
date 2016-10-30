@@ -1,6 +1,13 @@
+#ifndef _DATA_OBJECT_H_
+#define _DATA_OBJECT_H_
+
 #include "symbol.hpp"
 #include "operand.hpp"
 #include "iri.hpp"
+
+#define half_expr_t std::pair<int ,DataObject*>
+#define half_expr_is_valid(half) \
+  ((half).second !=0 )
 
 // This class is a dataobject.  It is meant to represent the type and name of the storage location
 // of a literal, the results of an expression, the results of a function call, or a symbol
@@ -33,8 +40,13 @@ struct DataObject {
   Operand get_operand();
 
   // Null pointer indicates error
-  static IRI* get_IRI(DataObject* lhs, int op, DataObject* rhs);
+  static IRI* get_IRI(DataObject* lhs, int op, DataObject* rhs, DataObject* result);
 
+  // Takes a half expression (op, lhs) and a data object (rhs) and:
+  // - generates a result DataObject
+  // - cleans up the inputs
+  // - sets IRI* iri to NULL or and iri if one needs to be generated
+  static DataObject* evaluate_expression(half_expr_t* half_expr, IRI** iri, DataObject* rhs);
 
 };
 
@@ -43,3 +55,4 @@ enum ArithmeticOperation{
   ADD, SUB, MUL, DIV
 };
 
+#endif

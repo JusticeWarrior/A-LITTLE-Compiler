@@ -41,6 +41,13 @@ LittleParser::~LittleParser(){
     // now delete the array
     delete *sym_arr_it;
   }
+
+// clean up the iri list
+  std::list<IRI*>::iterator iri_it;
+  for(iri_it = iri_list.begin(); iri_it != iri_list.end(); iri_it++) {
+    delete *iri_it;
+  }
+
 }
 
 void LittleParser::error(const char* err){
@@ -66,4 +73,22 @@ void LittleParser::parse(){
 
 bool LittleParser::accepted(){
   return accept;
+}
+
+void LittleParser::iri_list_push_back(IRI* iri) {
+  iri_list.push_back(iri);
+}
+
+void LittleParser::print_ir(std::stringstream& ss) {
+  std::list<IRI*>::iterator it;
+  for (it = iri_list.begin(); it != iri_list.end(); it++) {
+    (**it).PrintIRI(&ss);
+  }
+}
+
+void LittleParser::print_assembly(std::stringstream& ss) {
+  std::list<IRI*>::iterator it;
+  for (it = iri_list.begin(); it != iri_list.end(); it++) {
+    (**it).PrintAssembly(&ss);
+  }
 }

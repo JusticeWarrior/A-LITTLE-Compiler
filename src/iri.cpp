@@ -21,6 +21,8 @@ void IRI::PrintIRI(std::stringstream* stream) {
 		*stream << ";STOREI " << Operands[0].ToString() << " " << Operands[1].ToString() << std::endl;
 	else if (Type == WRITEI)
 		*stream << ";WRITEI " << Operands[0].ToString() << std::endl;
+	else if (Type == READI)
+		*stream << ";READI " << Operands[0].ToString() << std::endl;
 	else if (Type == ADDI)
 		*stream << ";ADDI " << Operands[0].ToString() << " " << Operands[1].ToString() << " " << Operands[2].ToString() << std::endl;
 	else if (Type == MULTI)
@@ -33,6 +35,8 @@ void IRI::PrintIRI(std::stringstream* stream) {
 		*stream << ";STOREF " << Operands[0].ToString() << " " << Operands[1].ToString() << std::endl;
 	else if (Type == WRITEF)
 		*stream << ";WRITEF " << Operands[0].ToString() << std::endl;
+	else if (Type == READF)
+		*stream << ";READF " << Operands[0].ToString() << std::endl;
 	else if (Type == ADDF)
 		*stream << ";ADDF " << Operands[0].ToString() << " " << Operands[1].ToString() << " " << Operands[2].ToString() << std::endl;
 	else if (Type == MULTF)
@@ -41,6 +45,8 @@ void IRI::PrintIRI(std::stringstream* stream) {
 		*stream << ";SUBF " << Operands[0].ToString() << " " << Operands[1].ToString() << " " << Operands[2].ToString() << std::endl;
 	else if (Type == DIVF)
 		*stream << ";DIVF " << Operands[0].ToString() << " " << Operands[1].ToString() << " " << Operands[2].ToString() << std::endl;
+	else
+		throw std::string("Unrecognized IRI");
 }
 
 void IRI::PrintAssembly(std::stringstream* stream) {
@@ -68,7 +74,7 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 		*stream << "divi " << Operands[1].ToAssemblyString() << " r0" << std::endl;
 		*stream << "move r0 " << Operands[2].ToAssemblyString() << std::endl;
 	}
-	if (Type == STOREF)
+	else if (Type == STOREF)
 		*stream << "move " << Operands[0].ToAssemblyString() << " " << Operands[1].ToAssemblyString() << std::endl;
 	else if (Type == WRITEF)
 		*stream << "sys writer " << Operands[0].ToAssemblyString() << std::endl;
@@ -92,4 +98,6 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 		*stream << "divr " << Operands[1].ToAssemblyString() << " r0" << std::endl;
 		*stream << "move r0 " << Operands[2].ToAssemblyString() << std::endl;
 	}
+	else
+		throw std::string("Unrecognized assembly directive!");
 }

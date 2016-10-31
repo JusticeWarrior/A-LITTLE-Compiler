@@ -596,7 +596,10 @@
     |
     ;
   if_stmt
-    : if_part else_part_recursive ENDIF { parser.pop_label(); }
+    : if_part else_part_recursive ENDIF {
+	parser.iri_list_push_back(parser.label_to_iri(parser.peek_label()));
+	parser.pop_label(); 
+      }
     ;
   cond	: expr compop expr {
 	    $$ = new ConditionObject(

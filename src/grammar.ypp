@@ -459,13 +459,26 @@
   primary
     : PARANTHLEFT expr PARANTHRIGHT {$$ = $2;} 
     | id {
+	IRI* iri;
 	Symbol* sym = parser.table_factory.get_symbol($1);
 	DataObject* data_object;
 	if (!sym)
 	  throw "symbol not in table!";
 	data_object = new DataObject(*sym);
-	parser.data_object_set.register_object(data_object);
-	$$ = static_cast<void*>(data_object);
+	
+	DataObject* temporary;
+	temporary = new DataObject(data_object->data_type);
+	// Generate move from variable to temporary
+	// This could be done only on assignment if necessary to make things faster
+	
+	parser.data_object_set.register_object(temporary);
+	if (temporary->data_type == DataObject::FLOAT)
+	  iri = IRI::create(IRI::STOREF, data_object->get_operand(), temporary->get_operand());
+	else
+	  iri = IRI::create(IRI::STOREI, data_object->get_operand(), temporary->get_operand());
+	parser.iri_list_push_back(iri);
+
+	$$ = static_cast<void*>(temporary);
 	free($1);
       }
     | INTLITERAL {
@@ -505,7 +518,9 @@
       std::string num = std::to_string(static_cast<long long>(block_num++));
       name += num;
       parser.table_factory.push_table(name);
-      //std::cout << "Symbol Table BLOCK " << block_num++ << std::endl;
+
+      //Code generation
+      parser.push_label(label_num++);
     }
     ;
   if_part

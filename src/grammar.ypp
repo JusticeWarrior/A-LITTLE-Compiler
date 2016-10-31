@@ -11,6 +11,7 @@
   #include "parser.hpp"
   #include "symbol.hpp"
   #include "data_object.hpp"
+  #include "condition_object.hpp"
 
   #undef yylex
   #define yylex scanner.yylex
@@ -23,6 +24,7 @@
   //#define half_expr_is_valid(half_expr) \
   //  ((half_expr).second != 0)
   int block_num=1;
+  int label_num=0;
 
   void yyerror (LittleParser& parser, LittleScanner& scanner, const char* err);
 }
@@ -46,11 +48,17 @@
   // Operation enum
   int op;
 
+  // Comparison enum
+  int comp_op;
+
   // DataObject*
   void* data_obj;
 
   // std::pair<op, DataObject*>*
   void* half_expr;
+
+  // ConditionObject*
+  void* condition_obj;
 
 
 }
@@ -117,6 +125,9 @@
 
 %type	  <half_expr> factor_prefix
 %type	  <half_expr> expr_prefix
+
+%type	  <comp_op>   compop
+%type     <condition_obj>      cond
 
 %%
   /* Program */
@@ -525,8 +536,24 @@
   if_stmt
     : if_part else_part_recursive ENDIF
     ;
-  cond: expr compop expr | TRUE | FALSE ;
-  compop: LESSTHAN | GREATERTHAN | EQUAL | NOTEQUAL | LESSTHANEQUAL | GREATERTHANEQUAL ;
+  cond	: expr compop expr {
+	    $$ = new ConditionObject(
+	      static_cast<DataObject*>($1),
+	      static_cast<DataObject*>($3),
+	      static_cast<ConditionObject::comp_t>($2)
+	    );
+	  }
+	| TRUE  {$$ = new ConditionObject(0, 0, ConditionObject::TRUE);}
+	| FALSE {$$ = new ConditionObject(0, 0, ConditionObject::FALSE);} 
+	;
+
+  compop  : LESSTHAN	      {$$ = ConditionObject::LT;}
+	  | GREATERTHAN	      {$$ = ConditionObject::GT;} 
+	  | EQUAL	      {$$ = ConditionObject::EQ;} 
+	  | NOTEQUAL	      {$$ = ConditionObject::NE;}
+	  | LESSTHANEQUAL     {$$ = ConditionObject::LE;}
+	  | GREATERTHANEQUAL  {$$ = ConditionObject::GE;}
+	  ;
 
   do_head
     : DO {
@@ -534,13 +561,28 @@
       std::string num = std::to_string(static_cast<long long>(block_num++));
       name += num;
       parser.table_factory.push_table(name);
-      //std::cout << "Symbol Table BLOCK " << block_num++ << std::endl;
+
+      // Generate code
+      parser.push_label(label_num++);
+      parser.iri_list_push_back(
+	parser.label_to_iri(parser.peek_label())
+      );
+      
+      // 
+
     }
     ;
   do_while_stmt
     : do_head decl stmt_list WHILE PARANTHLEFT cond PARANTHRIGHT SEMICOLON {
       parser.table_factory.pop_table();
-      //std::cout << "Pop Symbol Table" << std::endl;
+
+      // Generate code
+      ConditionObject* comparison = static_cast<ConditionObject*>($6);
+      parser.iri_list_push_back(comparison->generate_jump(parser.peek_label()));
+
+      parser.pop_label();
+      delete comparison;
+
     }
     ;
 

@@ -92,3 +92,20 @@ void LittleParser::print_assembly(std::stringstream& ss) {
     (**it).PrintAssembly(&ss);
   }
 }
+
+void LittleParser::push_label(int label) {
+  label_stack.push_back(label);
+}
+
+void LittleParser::pop_label() {
+  label_stack.pop_back();
+}
+
+int LittleParser::peek_label() {
+  return *(label_stack.end()--);
+}
+
+IRI* LittleParser::label_to_iri(int label) {
+  return IRI::create(IRI::LABEL, Operand(Operand::LABEL, std::string("L")+std::to_string(static_cast<unsigned long long>(label))));
+}
+

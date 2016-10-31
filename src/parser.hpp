@@ -41,10 +41,17 @@ class LittleParser{
     // Global parse data structures
     TableFactory table_factory;
 
+    // Label management
+    void push_label(int label);
+    void pop_label();
+    int peek_label();
+    IRI* label_to_iri(int label);
+
     void iri_list_push_back(IRI*);
     std::list<IRI*> iri_list;
 
   private:
+    std::vector<int> label_stack;
     bool accept;
     LittleScanner scanner;
     const char* error_message;

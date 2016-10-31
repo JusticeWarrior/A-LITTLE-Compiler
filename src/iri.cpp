@@ -68,6 +68,10 @@ void IRI::PrintIRI(std::stringstream* stream) {
 void IRI::PrintAssembly(std::stringstream* stream) {
 	if (Type == STOREI)
 		*stream << "move " << Operands[0].ToAssemblyString() << " " << Operands[1].ToAssemblyString() << std::endl;
+	else if (Type == READI)
+		*stream << "sys readi " << Operands[0].ToAssemblyString() << std::endl;
+	else if (Type == READF)
+		*stream << "sys readf " << Operands[0].ToAssemblyString() << std::endl;
 	else if (Type == WRITEI)
 		*stream << "sys writei " << Operands[0].ToAssemblyString() << std::endl;
 	else if (Type == ADDI) {

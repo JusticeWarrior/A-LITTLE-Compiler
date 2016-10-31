@@ -102,7 +102,7 @@ void LittleParser::pop_label() {
 }
 
 int LittleParser::peek_label() {
-  return *(label_stack.end()--);
+  return *(--label_stack.end());
 }
 
 IRI* LittleParser::label_to_iri(int label) {

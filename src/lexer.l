@@ -106,11 +106,26 @@ FALSE      {PRINT_INFO("KEYWORD", YYText()); return FALSE     ;}
 int main(){
   std::stringstream ss;
   LittleParser parser = LittleParser(&std::cin);
-  parser.parse();
+  try{
+    parser.parse();
+  }
+  catch(std::string a) {
+    std::cerr << a << std::endl;
+  }
   if (parser.accepted()) {
+    try {
     parser.print_ir(ss);
+    }
+    catch(std::string a){
+      std::cerr << a << std::endl;
+    }
     parser.table_factory.print_global_declarations(ss);
+    try{
     parser.print_assembly(ss);
+    }
+    catch(std::string str){
+      std::cerr << str << std::endl;
+    }
     std::cout << ss.rdbuf() << std::endl;
   }
   else

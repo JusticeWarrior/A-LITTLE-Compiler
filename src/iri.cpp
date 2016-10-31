@@ -114,6 +114,30 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 		*stream << "divr " << Operands[1].ToAssemblyString() << " r0" << std::endl;
 		*stream << "move r0 " << Operands[2].ToAssemblyString() << std::endl;
 	}
+	else if (Type == GT) {
+		*stream << "cmpi " << Operands[0].ToAssemblyString() << " " << Operands[1].ToAssemblyString() << std::endl;
+		*stream << "jgt " << Operands[2].ToAssemblyString() << std::endl;
+	}
+	else if (Type == GE) {
+		*stream << "cmpi " << Operands[0].ToAssemblyString() << " " << Operands[1].ToAssemblyString() << std::endl;
+		*stream << "jge " << Operands[2].ToAssemblyString() << std::endl;
+	}
+	else if (Type == LT) {
+		*stream << "cmpi " << Operands[0].ToAssemblyString() << " " << Operands[1].ToAssemblyString() << std::endl;
+		*stream << "jlt " << Operands[2].ToAssemblyString() << std::endl;
+	}
+	else if (Type == LE) {
+		*stream << "cmpi " << Operands[0].ToAssemblyString() << " " << Operands[1].ToAssemblyString() << std::endl;
+		*stream << "jle " << Operands[2].ToAssemblyString() << std::endl;
+	}
+	else if (Type == NE) {
+		*stream << "cmpi " << Operands[0].ToAssemblyString() << " " << Operands[1].ToAssemblyString() << std::endl;
+		*stream << "jne " << Operands[2].ToAssemblyString() << std::endl;
+	}
+	else if (Type == EQ) {
+		*stream << "cmpi " << Operands[0].ToAssemblyString() << " " << Operands[1].ToAssemblyString() << std::endl;
+		*stream << "jeq " << Operands[2].ToAssemblyString() << std::endl;
+	}
 	else if (Type == LABEL) {
 		*stream << "label " << Operands[0].ToAssemblyString() << std::endl;
 	}

@@ -45,6 +45,22 @@ void IRI::PrintIRI(std::stringstream* stream) {
 		*stream << ";SUBF " << Operands[0].ToString() << " " << Operands[1].ToString() << " " << Operands[2].ToString() << std::endl;
 	else if (Type == DIVF)
 		*stream << ";DIVF " << Operands[0].ToString() << " " << Operands[1].ToString() << " " << Operands[2].ToString() << std::endl;
+	else if (Type == GT)
+		*stream << ";GT " << Operands[0].ToString() << " " << Operands[1].ToString() << " " << Operands[2].ToString() << std::endl;
+	else if (Type == GE)
+		*stream << ";GE " << Operands[0].ToString() << " " << Operands[1].ToString() << " " << Operands[2].ToString() << std::endl;
+	else if (Type == LT)
+		*stream << ";LT " << Operands[0].ToString() << " " << Operands[1].ToString() << " " << Operands[2].ToString() << std::endl;
+	else if (Type == LE)
+		*stream << ";LE " << Operands[0].ToString() << " " << Operands[1].ToString() << " " << Operands[2].ToString() << std::endl;
+	else if (Type == NE)
+		*stream << ";NE " << Operands[0].ToString() << " " << Operands[1].ToString() << " " << Operands[2].ToString() << std::endl;
+	else if (Type == EQ)
+		*stream << ";EQ " << Operands[0].ToString() << " " << Operands[1].ToString() << " " << Operands[2].ToString() << std::endl;
+	else if (Type == JUMP)
+		*stream << ";JUMP " << Operands[0].ToString() << std::endl;
+	else if (Type == LABEL)
+		*stream << ";LABEL " << Operands[0].ToString() << std::endl;
 	else
 		throw std::string("Unrecognized IRI");
 }
@@ -97,6 +113,12 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 		*stream << "move " << Operands[0].ToAssemblyString() << " r0"  << std::endl;
 		*stream << "divr " << Operands[1].ToAssemblyString() << " r0" << std::endl;
 		*stream << "move r0 " << Operands[2].ToAssemblyString() << std::endl;
+	}
+	else if (Type == LABEL) {
+		*stream << "label " << Operands[0].ToAssemblyString() << std::endl;
+	}
+	else if (Type == JUMP) {
+		*stream << "jmp " << Operands[0].ToAssemblyString() << std::endl;
 	}
 	else
 		throw std::string("Unrecognized assembly directive!");

@@ -14,7 +14,7 @@ run_test() {
     rm test.result
   else
     rm test.result
-    echo "\033[0;31mFAILED\033[0m"
+    echo -e "\033[0;31mFAILED\033[0m"
     exit_code=1
   fi
 }

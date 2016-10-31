@@ -46,6 +46,7 @@ class LittleParser{
     void pop_label();
     int peek_label();
     IRI* label_to_iri(int label);
+    IRI* jump_to_label(int label);
 
     void iri_list_push_back(IRI*);
     std::list<IRI*> iri_list;

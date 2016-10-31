@@ -109,3 +109,6 @@ IRI* LittleParser::label_to_iri(int label) {
   return IRI::create(IRI::LABEL, Operand(Operand::LABEL, std::string("L")+std::to_string(static_cast<unsigned long long>(label))));
 }
 
+IRI* LittleParser::jump_to_label(int label) {
+  return IRI::create(IRI::JUMP, Operand(Operand::LABEL, std::string("L")+std::to_string(static_cast<unsigned long long>(label))));
+}

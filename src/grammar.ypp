@@ -524,9 +524,33 @@
     }
     ;
   if_part
-    : if_head PARANTHLEFT cond PARANTHRIGHT decl stmt_list {
-      parser.table_factory.pop_table();
-      //std::cout << "Pop Symbol Table"<< std::endl;
+    : if_head PARANTHLEFT cond {
+	ConditionObject* condition_obj;
+	IRI* iri;
+
+	parser.push_label(label_num++);
+
+	condition_obj = static_cast<ConditionObject*>($3);
+	condition_obj->invert();
+	iri = condition_obj->generate_jump(parser.peek_label());
+
+	if (iri) {
+	  parser.iri_list_push_back(iri);
+	}
+
+      } PARANTHRIGHT decl stmt_list {
+
+	parser.table_factory.pop_table();
+
+	// Generate code
+	IRI* end_if_label;
+	IRI* jump_to_end;
+
+	end_if_label = parser.label_to_iri(parser.peek_label());
+	parser.pop_label();
+	jump_to_end = parser.jump_to_label(parser.peek_label());
+	parser.iri_list_push_back(jump_to_end);
+	parser.iri_list_push_back(end_if_label);
       }
     ;
   else_head
@@ -535,13 +559,36 @@
       std::string num = std::to_string(static_cast<long long>(block_num++));
       name += num;
       parser.table_factory.push_table(name);
-      //std::cout << "Symbol Table BLOCK " << block_num++ << std::endl;
+
     }
     ;
   else_part
-    : else_head PARANTHLEFT cond PARANTHRIGHT decl stmt_list {
-      parser.table_factory.pop_table();
-      //std::cout << "Pop Symbol Table"<< std::endl;
+    : else_head PARANTHLEFT cond {
+	ConditionObject* condition_obj;
+	IRI* iri;
+
+	parser.push_label(label_num++);
+
+	condition_obj = static_cast<ConditionObject*>($3);
+	condition_obj->invert();
+	iri = condition_obj->generate_jump(parser.peek_label());
+
+	if (iri) {
+	  parser.iri_list_push_back(iri);
+	}
+      
+      } PARANTHRIGHT decl stmt_list {
+	parser.table_factory.pop_table();
+
+	// Generate code
+	IRI* end_if_label;
+	IRI* jump_to_end;
+
+	end_if_label = parser.label_to_iri(parser.peek_label());
+	parser.pop_label();
+	jump_to_end = parser.jump_to_label(parser.peek_label());
+	parser.iri_list_push_back(jump_to_end);
+	parser.iri_list_push_back(end_if_label);
     } 
     ;
   else_part_recursive
@@ -549,7 +596,7 @@
     |
     ;
   if_stmt
-    : if_part else_part_recursive ENDIF
+    : if_part else_part_recursive ENDIF { parser.pop_label(); }
     ;
   cond	: expr compop expr {
 	    $$ = new ConditionObject(

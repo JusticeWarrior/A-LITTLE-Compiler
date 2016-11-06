@@ -482,7 +482,8 @@
 	free($1);
       }
     | INTLITERAL {
-	Operand int_literal = Operand(Operand::INTLITERAL, $1);
+	Operand int_literal = Operand(Operand::LITERAL, $1);
+	int_literal.DataType = Operand::INT;
 	DataObject* data_object = new DataObject(DataObject::INT); // Store this in a temp register
 	parser.data_object_set.register_object(data_object);
 	IRI* iri = IRI::create(IRI::STOREI, int_literal, data_object->get_operand());
@@ -491,7 +492,8 @@
 	free($1);
       }
     | FLOATLITERAL {
-	Operand int_literal = Operand(Operand::FLOATLITERAL, $1);
+	Operand int_literal = Operand(Operand::LITERAL, $1);
+	int_literal.DataType = Operand::FLOAT;
 	DataObject* data_object = new DataObject(DataObject::FLOAT); // Store this in a temp register
 	parser.data_object_set.register_object(data_object);
 	IRI* iri = IRI::create(IRI::STOREF, int_literal, data_object->get_operand());

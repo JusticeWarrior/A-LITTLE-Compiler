@@ -15,6 +15,15 @@ IRI::IRI(Types type, Operand op1, Operand op2, Operand op3)
 		Operands.push_back(op2);
 		Operands.push_back(op3);
 	}
+std::string IRI::get_comparison(){
+	std::string str = "";
+	if (Operands[0].DataType == Operand::FLOAT)
+	  str += "cmpf ";
+	else
+	  str+= "cmpi ";
+	str += Operands[0].ToAssemblyString() + " " + Operands[1].ToAssemblyString();
+	return str;
+}
 
 void IRI::PrintIRI(std::stringstream* stream) {
 	if (Type == STOREI)
@@ -119,27 +128,27 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 		*stream << "move r0 " << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == GT) {
-		*stream << "cmpi " << Operands[0].ToAssemblyString() << " " << Operands[1].ToAssemblyString() << std::endl;
+		*stream << get_comparison() << std::endl;
 		*stream << "jgt " << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == GE) {
-		*stream << "cmpi " << Operands[0].ToAssemblyString() << " " << Operands[1].ToAssemblyString() << std::endl;
+		*stream << get_comparison() << std::endl;
 		*stream << "jge " << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == LT) {
-		*stream << "cmpi " << Operands[0].ToAssemblyString() << " " << Operands[1].ToAssemblyString() << std::endl;
+		*stream << get_comparison() << std::endl;
 		*stream << "jlt " << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == LE) {
-		*stream << "cmpi " << Operands[0].ToAssemblyString() << " " << Operands[1].ToAssemblyString() << std::endl;
+		*stream << get_comparison() << std::endl;
 		*stream << "jle " << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == NE) {
-		*stream << "cmpi " << Operands[0].ToAssemblyString() << " " << Operands[1].ToAssemblyString() << std::endl;
+		*stream << get_comparison() << std::endl;
 		*stream << "jne " << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == EQ) {
-		*stream << "cmpi " << Operands[0].ToAssemblyString() << " " << Operands[1].ToAssemblyString() << std::endl;
+		*stream << get_comparison() << std::endl;
 		*stream << "jeq " << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == LABEL) {

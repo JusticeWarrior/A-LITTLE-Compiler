@@ -31,6 +31,7 @@ class IRI{
 
 		void PrintIRI(std::stringstream* stream);
 		void PrintAssembly(std::stringstream* stream);
+		std::string get_comparison();
 
 		std::vector<Operand> Operands;
 		Types Type;

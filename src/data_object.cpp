@@ -20,10 +20,14 @@ DataObject::DataObject(DataType type) :
 {}
 
 Operand DataObject::get_operand() {
+  Operand operand(Operand::REGISTER, number);
   if (reg_type == TEMP)
-    return Operand(Operand::REGISTER, number);
+    operand =  Operand(Operand::REGISTER, number);
   else
-    return Operand(Operand::VARIABLE, name);
+    operand =  Operand(Operand::VARIABLE, name);
+
+  operand.DataType = data_type == INT ? Operand::INT : Operand::FLOAT;
+  return operand;
 }
 
 IRI* DataObject::get_IRI(DataObject* lhs, int op, DataObject* rhs, DataObject* result){

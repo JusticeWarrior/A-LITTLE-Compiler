@@ -18,7 +18,7 @@ IRI::IRI(Types type, Operand op1, Operand op2, Operand op3)
 std::string IRI::get_comparison(){
 	std::string str = "";
 	if (Operands[0].DataType == Operand::FLOAT)
-	  str += "cmpf ";
+	  str += "cmpr ";
 	else
 	  str+= "cmpi ";
 	str += Operands[0].ToAssemblyString() + " " + Operands[1].ToAssemblyString();

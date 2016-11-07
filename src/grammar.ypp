@@ -465,6 +465,7 @@
 	if (!sym)
 	  throw "symbol not in table!";
 	data_object = new DataObject(*sym);
+	parser.data_object_set.register_object(data_object);
 	
 	DataObject* temporary;
 	temporary = new DataObject(data_object->data_type);
@@ -535,11 +536,10 @@
 	condition_obj = static_cast<ConditionObject*>($3);
 	condition_obj->invert();
 	iri = condition_obj->generate_jump(parser.peek_label());
-
 	if (iri) {
 	  parser.iri_list_push_back(iri);
 	}
-
+	delete condition_obj;
       } PARANTHRIGHT decl stmt_list {
 
 	parser.table_factory.pop_table();
@@ -578,6 +578,7 @@
 	if (iri) {
 	  parser.iri_list_push_back(iri);
 	}
+	delete condition_obj;
       
       } PARANTHRIGHT decl stmt_list {
 	parser.table_factory.pop_table();

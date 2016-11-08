@@ -15,12 +15,14 @@ OBJS = $(addprefix $(OBJ_DIR)/, $(addsuffix .o, $(basename $(notdir $(SRCS)))))
 CXX=g++
 CPPFLAGS = 
 
-all: group micro
+all: group Micro
+
+compiler: group Micro
 
 group:
 	 @ echo "Jordan Huffaker jhuffak, Eric Colter coltere"
-micro: $(OBJS)
-	 @ g++ -g -std=c++0x $(OBJS) -o micro
+Micro: $(OBJS)
+	 @ g++ -g -std=c++0x $(OBJS) -o Micro
 
 $(OBJ_DIR)/flex.yy.o: $(LEXER_CPP) $(GRAMMAR_HPP) | $(OBJ_DIR)
 	 @ g++ -g -std=c++0x -I$(GEN_DIR) -I$(SRC_DIR) $< -c -o $@
@@ -50,8 +52,8 @@ $(OBJ_DIR):
 	 @ mkdir objects
 
 clean:
-	 @ rm -rf generated micro objects
+	 @ rm -rf generated Micro objects
 
-.PHONY: all group clean
+.PHONY: all group clean compiler
 .SECONDARY:
 .SUFFIXES:

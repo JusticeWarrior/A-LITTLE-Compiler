@@ -1,6 +1,7 @@
 
 %top{
 #include <iostream>
+#include <fstream>
 #include <string.h>
 #include <string>
 #include <vector>
@@ -103,9 +104,10 @@ FALSE      {PRINT_INFO("KEYWORD", YYText()); return FALSE     ;}
 {other} {return (COMMENT);}
 %%
 
-int main(){
+int main(int argc, char** argv){
   std::stringstream ss;
-  LittleParser parser = LittleParser(&std::cin);
+  std::ifstream file(argv[1]);
+  LittleParser parser = LittleParser(&file);
   try{
     parser.parse();
   }

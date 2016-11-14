@@ -5,7 +5,7 @@
 
 class Operand{
 	public:
-		enum Types { REGISTER, LITERAL, LABEL, VARIABLE };
+		enum Types { REGISTER, LITERAL, LABEL, VARIABLE, LOCAL, PARAMETER };
 		enum DataTypes {FLOAT, INT};
 		Operand(Types type, std::string value);
 		Operand(Types type, int reg);
@@ -14,7 +14,14 @@ class Operand{
 		Types Type;
 		DataTypes DataType;
 		std::string Value;
-		int Reg;
+		int Reg;    // IRI code
+		int Offset; // assembly code for LOCAL and PARAMETER types
+		
 };
 
 #endif
+
+/*
+$L3  ->  $-15
+$P2  ->  $-2
+*/

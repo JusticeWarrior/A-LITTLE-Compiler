@@ -91,6 +91,7 @@ void LittleParser::print_assembly(std::stringstream& ss) {
   for (it = iri_list.begin(); it != iri_list.end(); it++) {
     (**it).PrintAssembly(&ss);
   }
+  ss << "sys halt" << std::endl;
 }
 
 void LittleParser::push_label(int label) {

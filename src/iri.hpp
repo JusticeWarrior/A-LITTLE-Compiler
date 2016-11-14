@@ -12,7 +12,8 @@ class IRI{
 			STOREI, WRITEI, ADDI, MULTI, SUBI,
 			DIVI, STOREF, WRITEF, ADDF, MULTF,
 			SUBF, DIVF, READF, READI, GT, GE,
-			LT, LE, NE, EQ, JUMP, LABEL
+			LT, LE, NE, EQ, JUMP, LABEL, JSR,
+			PUSH, POP, RET, LINK
 		};
 
 		IRI(Types type, Operand op1);

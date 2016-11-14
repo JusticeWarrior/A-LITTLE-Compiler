@@ -20,7 +20,7 @@ std::string IRI::get_comparison(){
 	if (Operands[0].DataType == Operand::FLOAT)
 	  str += "cmpr ";
 	else
-	  str+= "cmpi ";
+	  str += "cmpi ";
 	str += Operands[0].ToAssemblyString() + " " + Operands[1].ToAssemblyString();
 	return str;
 }
@@ -70,6 +70,16 @@ void IRI::PrintIRI(std::stringstream* stream) {
 		*stream << ";JUMP " << Operands[0].ToString() << std::endl;
 	else if (Type == LABEL)
 		*stream << ";LABEL " << Operands[0].ToString() << std::endl;
+	else if (Type == JSR)
+		*stream << ";JSR " << Operands[0].ToString() << std::endl;
+	else if (Type == PUSH)
+		*stream << ";PUSH " << Operands[0].ToString() << std::endl;
+	else if (Type == POP)
+		*stream << ";POP " << Operands[0].ToString() << std::endl;
+	else if (Type == RET)
+		*stream << ";RET" << std::endl;
+	else if (Type == LINK)
+		*stream << ";LINK" << std::endl;
 	else
 		throw std::string("Unrecognized IRI");
 }
@@ -156,6 +166,32 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 	}
 	else if (Type == JUMP) {
 		*stream << "jmp " << Operands[0].ToAssemblyString() << std::endl;
+	}
+	else if (Type == JSR) {
+		*stream << "push r0" << std::endl;
+		*stream << "push r1" << std::endl;
+		*stream << "push r2" << std::endl;
+		*stream << "push r3" << std::endl;
+		*stream << "jsr " << Operands[0].ToAssemblyString() << std::endl;
+		if (Operands[0].ToAssemblyString != "main") {
+			*stream << "pop r3" << std::endl;
+			*stream << "pop r2" << std::endl;
+			*stream << "pop r1" << std::endl;
+			*stream << "pop r0" << std::endl;
+		}
+	}
+	else if (Type == PUSH) {
+		*stream << "push " << Operands[0].ToAssemblyString() << std::endl;
+	}
+	else if (Type == POP) {
+		*stream << "pop " << Operands[0].ToAssemblyString() << std::endl;
+	}
+	else if (Type == RET) {
+		*stream << "unlnk" << std::endl;
+		*stream << "ret" << std::endl;
+	}
+	else if (Type == LINK) {
+		*stream << "link" << std::endl;
 	}
 	else
 		throw std::string("Unrecognized assembly directive!");

@@ -7,12 +7,18 @@ Operand::Operand(Types type, int reg)
 std::string Operand::ToString() {
 	if (Type == REGISTER)
 		return "$T" + std::to_string(static_cast<long long>(Reg));
+	else if (Type == LOCAL)
+		return "$L" + std::to_string(static_cast<long long>(Reg));
+	else if (Type == PARAMETER)
+		return "$P" + std::to_string(static_cast<long long>(Reg));
 	else
 		return Value;
 }
 std::string Operand::ToAssemblyString() {
 	if (Type == REGISTER)
 		return "r" + std::to_string(static_cast<long long>(Reg));
+	else if (Type == LOCAL || Type == PARAMETER)
+		return "$-" + std::to_string(static_cast<long long>(Offset));
 	else
 		return Value;
 }

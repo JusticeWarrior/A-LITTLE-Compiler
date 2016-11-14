@@ -1,4 +1,5 @@
 #include "parser.hpp"
+#include "data_object.hpp"
 
 extern void yyparser(LittleParser& parser, LittleScanner& scanner);
 
@@ -6,12 +7,12 @@ LittleParser::LittleParser(std::istream* i, std::ostream* o):
   scanner(i,o),
   accept(true),
   error_message(0)
-  {}
+  {DataObject::parser = this;}
 
 LittleParser::LittleParser(std::istream* i):
   scanner(i),
   accept(true)
-  {}
+  {DataObject::parser = this;}
 
 LittleParser::~LittleParser(){
   // Cleanup str_arr_arr
@@ -121,4 +122,8 @@ void LittleParser::start_function(std::string name, int argc) {
 
 void LittleParser::finish_function() {
   // Things
+}
+
+Function& LittleParser::current_function() {
+  return (*function_list.back());
 }

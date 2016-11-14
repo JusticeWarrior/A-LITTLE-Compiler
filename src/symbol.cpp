@@ -2,7 +2,7 @@
 #include "string.h"
 
 Symbol::Symbol(std::string name, Types type, T value)
-	:Name(name), Type(type), Value(value) { }
+	:Name(name), Type(type), Value(value), Context(GLOBAL){ }
 Symbol::Symbol(const Symbol& sym)
   :Name(sym.Name), Type(sym.Type), Value(sym.Value)
 {

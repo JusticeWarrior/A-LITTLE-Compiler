@@ -54,6 +54,7 @@ class LittleParser{
     void start_function(std::string name, int argc);
     void finish_function();
     std::list<IRI*> iri_list;
+    Function& current_function();
 
   private:
     std::vector<Function*> function_list; // Back is edited one

@@ -1,22 +1,25 @@
 #include "data_object.hpp"
+#include "parser.hpp"
 
-DataObject::DataObject(Symbol sym) :
-  name(sym.Name),
-  reg_type(RegisterType::VAR)
+DataObject::DataObject(Symbol* sym) :
+  //name(sym.Name),
+  reg_type(RegisterType::VAR),
+  symbol(sym)
 
-{
-  if (sym.Type == Symbol::INT)
+{ 
+  if (sym->Type == Symbol::INT)
     data_type = INT;
-  else if (sym.Type == Symbol::FLOAT)
+  else if (sym->Type == Symbol::FLOAT)
     data_type = FLOAT;
   else
     data_type = STRING;
+  
 }
 
 DataObject::DataObject(DataType type) :
   data_type(type),
   reg_type(TEMP),
-  number(temp_num++)
+  number(parser->current_function().get_next_temp())
 {}
 
 Operand DataObject::get_operand() {
@@ -66,4 +69,4 @@ DataObject* DataObject::evaluate_expression(half_expr_t* half_expr, IRI** iri, D
     }
   } 
 
-int DataObject::temp_num = 1;
+LittleParser* DataObject::parser = 0;

@@ -9,6 +9,8 @@
 #define half_expr_is_valid(half) \
   ((half).second !=0 )
 
+class LittleParser;
+
 // This class is a dataobject.  It is meant to represent the type and name of the storage location
 // of a literal, the results of an expression, the results of a function call, or a symbol
 
@@ -19,7 +21,9 @@ struct DataObject {
   enum RegisterType {TEMP, VAR};
 
   // Static
-  static int temp_num;
+  //static int temp_num;
+  // The most awful thing you've seen all day
+  static LittleParser* parser;
 
   // Members
   DataType data_type;
@@ -33,7 +37,7 @@ struct DataObject {
   int number;
 
   // Initialize var type
-  DataObject(Symbol sym);
+  DataObject(Symbol* sym);
 
   // Initialize temp type
   DataObject(DataType type);

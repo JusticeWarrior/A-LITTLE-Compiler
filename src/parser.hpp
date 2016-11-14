@@ -6,6 +6,7 @@
 #include "data_object.hpp"
 #include "iri.hpp"
 #include "memory_set.hpp"
+#include "function.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -50,7 +51,7 @@ class LittleParser{
 
     // Internally called stuff
     void iri_list_push_back(IRI*);
-    void start_function(std::string name);
+    void start_function(std::string name, int argc);
     void finish_function();
     std::list<IRI*> iri_list;
 

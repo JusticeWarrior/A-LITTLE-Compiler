@@ -77,7 +77,7 @@ bool LittleParser::accepted(){
 
 void LittleParser::iri_list_push_back(IRI* iri) {
   //iri_list.push_back(iri);
-  function_list.back().iri_list.push_back(iri);
+  function_list.back()->iri_list.push_back(iri);
 }
 
 void LittleParser::print_ir(std::stringstream& ss) {
@@ -115,10 +115,10 @@ IRI* LittleParser::jump_to_label(int label) {
   return IRI::create(IRI::JUMP, Operand(Operand::LABEL, std::string("L")+std::to_string(static_cast<unsigned long long>(label))));
 }
 
-void start_function(std::string name) {
-  function_list.push_back(new Function(name));
+void LittleParser::start_function(std::string name, int argc) {
+  function_list.push_back(new Function(name, argc));
 }
 
-void finish_function() {
+void LittleParser::finish_function() {
   // Things
 }

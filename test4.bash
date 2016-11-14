@@ -1,12 +1,15 @@
 #!/bin/bash
+
+cd ../submission
 make clean
 make compiler
+cd ../A-LITTLE-Compiler
 
 exit_code=0
 
 run_test() {
   echo "RUNNING FILE ${1}.micro =================="
-  Micro testcases4/input/${1}.micro > test.out
+  ../submission/Micro testcases4/input/${1}.micro > test.out
   cat testcases4/input/${1}.input | testcases4/tiny test.out | head -n1 > test.result
   rm test.out
   if cat testcases4/output/${1}.tinyout | head -n1 | diff - test.result ; then

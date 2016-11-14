@@ -116,7 +116,9 @@ int main(int argc, char** argv){
   }
   if (parser.accepted()) {
     try {
+    ss << ";IR code" << std::endl;
     parser.print_ir(ss);
+    ss << ";tiny code" << std::endl;
     }
     catch(std::string a){
       std::cerr << a << std::endl;

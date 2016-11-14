@@ -173,7 +173,7 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 		*stream << "push r2" << std::endl;
 		*stream << "push r3" << std::endl;
 		*stream << "jsr " << Operands[0].ToAssemblyString() << std::endl;
-		if (Operands[0].ToAssemblyString != "main") {
+		if (Operands[0].ToAssemblyString() != "main") {
 			*stream << "pop r3" << std::endl;
 			*stream << "pop r2" << std::endl;
 			*stream << "pop r1" << std::endl;

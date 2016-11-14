@@ -48,10 +48,14 @@ class LittleParser{
     IRI* label_to_iri(int label);
     IRI* jump_to_label(int label);
 
+    // Internally called stuff
     void iri_list_push_back(IRI*);
+    void start_function(std::string name);
+    void finish_function();
     std::list<IRI*> iri_list;
 
   private:
+    std::vector<Function*> function_list; // Back is edited one
     std::vector<int> label_stack;
     bool accept;
     LittleScanner scanner;

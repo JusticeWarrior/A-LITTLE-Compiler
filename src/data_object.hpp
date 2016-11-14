@@ -27,6 +27,7 @@ struct DataObject {
 
   // Relevant only for VAR
   std::string name;
+  Symbol* symbol; // A pointer to the symbol table entry
 
   // Relevant only for TEMP
   int number;

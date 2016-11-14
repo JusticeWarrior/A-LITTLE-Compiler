@@ -1,11 +1,18 @@
-
+#include <string>
+#include <list>
 
 struct Function {
+  Function(std::string asdf, int num_params);
+  int num_params;
   std::string name;
-  int num_parameters;
-  int num_locals;
   std::list<IRI*> iri_list;
 
+  int get_next_temp();
+  int get_next_local();
+  
+  private:
+    int next_temp;
+    int next_local;
 };
 
 // Types of symbols :

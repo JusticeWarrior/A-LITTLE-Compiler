@@ -24,10 +24,21 @@ DataObject::DataObject(DataType type) :
 
 Operand DataObject::get_operand() {
   Operand operand(Operand::REGISTER, number);
-  if (reg_type == TEMP)
+  if (reg_type == TEMP) {
     operand =  Operand(Operand::REGISTER, number);
-  else
+    operand.Offset = 12435; // Fix this later
+  }
+  else if (symbol->Context == Symbol::GLOBAL)
     operand =  Operand(Operand::VARIABLE, name);
+  else if (symbol->Context == Symbol::LOCAL)
+    operand =  Operand(Operand::LOCAL, symbol->local_variable_number);
+  else
+    operand =  Operand(Operand::PARAMETER, symbol->parameter_number);
+
+  if (reg_type != TEMP) {
+    operand.Offset = symbol->offset;
+  }
+
 
   operand.DataType = data_type == INT ? Operand::INT : Operand::FLOAT;
   return operand;

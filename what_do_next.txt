@@ -1,0 +1,5 @@
+WHAT DO NEXT:
+  - Make new function frame when starting new function
+  - Add all params in param list to symbol table with appropritate sybmol number
+  - Add all locals to function frame properly
+  - Upon finishing a function, assign the offsets properly

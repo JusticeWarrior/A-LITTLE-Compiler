@@ -26,6 +26,9 @@ class Symbol{
 		// It its a parameter, needs to have the parameter number
 		int parameter_number;
 
+		// offset in the current stack frame.
+		int offset;
+
 };
 
 #endif

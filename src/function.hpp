@@ -3,13 +3,15 @@
 #include "iri.hpp"
 
 struct Function {
-  Function(std::string asdf, int num_params);
+  Function(std::string asdf);
   int num_params;
   std::string name;
   std::list<IRI*> iri_list;
 
   int get_next_temp();
   int get_next_local();
+  int get_num_temps();
+  int get_num_locals();
   
   private:
     int next_temp;

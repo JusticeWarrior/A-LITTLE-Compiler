@@ -51,7 +51,8 @@ class LittleParser{
 
     // Internally called stuff
     void iri_list_push_back(IRI*);
-    void start_function(std::string name, int argc);
+    void start_function(std::string name);
+    void set_argc(int argc);
     void finish_function();
     std::list<IRI*> iri_list;
     Function& current_function();

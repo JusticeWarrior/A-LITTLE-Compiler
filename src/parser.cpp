@@ -116,14 +116,22 @@ IRI* LittleParser::jump_to_label(int label) {
   return IRI::create(IRI::JUMP, Operand(Operand::LABEL, std::string("L")+std::to_string(static_cast<unsigned long long>(label))));
 }
 
-void LittleParser::start_function(std::string name, int argc) {
-  function_list.push_back(new Function(name, argc));
+void LittleParser::start_function(std::string name) {
+  function_list.push_back(new Function(name));
+}
+
+void LittleParser::set_argc(int argc) {
+  function_list.back()->num_params = argc;
 }
 
 void LittleParser::finish_function() {
+  std::cerr << "Finished function " << current_function().name << std::endl;
+  std::cerr << "Params: " << current_function().num_params << std::endl;
+  std::cerr << "Locals: " << current_function().get_num_locals() << std::endl;
+  std::cerr << "Temps: " <<  current_function().get_num_temps() << std::endl;
   // Things
 }
 
 Function& LittleParser::current_function() {
-  return (*function_list.back());
+  return *(function_list.back());
 }

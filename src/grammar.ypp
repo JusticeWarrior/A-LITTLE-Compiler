@@ -219,6 +219,7 @@
   /* Function Paramater List */
   param_decl_list
     : param_decl param_decl_tail {
+      int param_num = 0;
       sym_arr_t* pArr = static_cast<sym_arr_t*>($2);
       Symbol* pSym = static_cast<Symbol*>($1);
       pArr->push_front(pSym);
@@ -226,22 +227,14 @@
       sym_arr_t::iterator it;
       for (it = pArr->begin(); it != pArr->end(); it++){
 	pSym = *it;
-	/*
-	if (pSym->Type == Symbol::INT){
-	  std::cout <<
-	  "insert_symbol("<<pSym->Name<<", INT, NULL)" <<
-	  std::endl;
-	}
-	else {
-	  std::cout <<
-	  "insert_symbol("<<pSym->Name<<", FLOAT, NULL)";
-	}
-	*/
+	pSym->Context = Symbol::PARAMETER;
+	pSym->parameter_number = ++param_num;
 	if (!parser.table_factory.insert_symbol(*pSym)){
 	  yyerror(parser,scanner, "Redeclaration Error");
 	  YYABORT;
 	}
       }
+      parser.set_argc(param_num);
     }
     | {$$ = 0;}
     ;
@@ -276,11 +269,13 @@
   func_head
     : FUNCTION any_type id {
       parser.table_factory.push_table($3);
+      parser.start_function($3);
       free($3);
     }
     ;
   func_decl
     : func_head PARANTHLEFT param_decl_list PARANTHRIGHT BEGINT func_body END {
+      parser.finish_function();
       parser.table_factory.pop_table();
     }
     ;
@@ -312,7 +307,7 @@
   assign_expr
     : id COLONEQUAL expr {
       IRI* iri;
-      DataObject* dest = new DataObject(*parser.table_factory.get_symbol($1));
+      DataObject* dest = new DataObject(parser.table_factory.get_symbol($1));
       DataObject* src = static_cast<DataObject*>($3);
       parser.data_object_set.register_object(dest);
       if (dest->data_type == DataObject::FLOAT)
@@ -335,7 +330,7 @@
 	symbol = parser.table_factory.get_symbol(*it);
 	if (!symbol)
 	  throw "Symbol not found!";
-	DataObject data_object = DataObject(*symbol);
+	DataObject data_object = DataObject(symbol);
 	iri = IRI::create(
 	  data_object.data_type == DataObject::FLOAT ? IRI::READF : IRI::READI,
 	  data_object.get_operand()
@@ -355,7 +350,7 @@
 	symbol = parser.table_factory.get_symbol(*it);
 	if (!symbol)
 	  throw "Symbol not found!";
-	DataObject data_object = DataObject(*symbol);
+	DataObject data_object = DataObject(symbol);
 	iri = IRI::create(
 	  data_object.data_type == DataObject::FLOAT ? IRI::WRITEF : IRI::WRITEI,
 	  data_object.get_operand()
@@ -446,7 +441,22 @@
     | call_expr
     ;
   call_expr
-    : id PARANTHLEFT expr_list PARANTHRIGHT {free($1); $$=0;} 
+    : id PARANTHLEFT expr_list PARANTHRIGHT {
+      // OLD CODE
+      //free($1); $$=0;
+      //
+      //HACK CODE
+
+	Operand int_literal = Operand(Operand::LITERAL, "1.0");
+	int_literal.DataType = Operand::FLOAT;
+	DataObject* data_object = new DataObject(DataObject::FLOAT); // Store this in a temp register
+	parser.data_object_set.register_object(data_object);
+	IRI* iri = IRI::create(IRI::STOREF, int_literal, data_object->get_operand());
+	parser.iri_list_push_back(iri);
+	$$ = static_cast<void*>(data_object);
+	free($1);
+      
+      } 
     ;
   expr_list
     : expr expr_list_tail 
@@ -464,7 +474,7 @@
 	DataObject* data_object;
 	if (!sym)
 	  throw "symbol not in table!";
-	data_object = new DataObject(*sym);
+	data_object = new DataObject(sym);
 	parser.data_object_set.register_object(data_object);
 	
 	DataObject* temporary;

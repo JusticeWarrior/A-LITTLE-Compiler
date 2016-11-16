@@ -1,5 +1,7 @@
 #include "table_factory.hpp"
 #include "stdlib.h"
+#include "data_object.hpp"
+#include "parser.hpp"
 #include <sstream>
 #include <iostream>
 
@@ -21,6 +23,12 @@ bool TableFactory::insert_symbol(Symbol sym){
     return false;
   }
   else{
+    if (scope_stack.size() > 1 && sym.Context == Symbol::GLOBAL) {
+      std::cerr << "Finished local named " << sym.Name << std::endl;
+      sym.Context = Symbol::LOCAL;
+      sym.local_variable_number = DataObject::parser->current_function().get_next_local();
+    }
+      
     scope_stack.front().InsertSymbol(sym);
     return true;
   }

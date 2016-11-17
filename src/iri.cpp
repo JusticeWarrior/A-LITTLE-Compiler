@@ -79,7 +79,7 @@ void IRI::PrintIRI(std::stringstream* stream) {
 	else if (Type == RET)
 		*stream << ";RET" << std::endl;
 	else if (Type == LINK)
-		*stream << ";LINK" << std::endl;
+		*stream << ";LINK" << Operands[0].ToString() << std::endl;
 	else
 		throw std::string("Unrecognized IRI");
 }
@@ -191,7 +191,7 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 		*stream << "ret" << std::endl;
 	}
 	else if (Type == LINK) {
-		*stream << "link" << std::endl;
+		*stream << "link " << Operands[0].ToAssemblyString() << std::endl;
 	}
 	else
 		throw std::string("Unrecognized assembly directive!");

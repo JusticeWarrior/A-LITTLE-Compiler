@@ -129,7 +129,8 @@ void LittleParser::finish_function() {
   std::cerr << "Params: " << current_function().num_params << std::endl;
   std::cerr << "Locals: " << current_function().get_num_locals() << std::endl;
   std::cerr << "Temps: " <<  current_function().get_num_temps() << std::endl;
-  // Things
+  std::stringstream ss;
+  current_function().finish();
 }
 
 Function& LittleParser::current_function() {

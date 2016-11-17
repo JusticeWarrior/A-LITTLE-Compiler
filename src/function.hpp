@@ -12,6 +12,12 @@ struct Function {
   int get_next_local();
   int get_num_temps();
   int get_num_locals();
+
+  int calc_temp_offset(int temp_num);
+  int calc_param_offset(int param_num);
+  int calc_local_offset(int local_num);
+
+  void finish();
   
   private:
     int next_temp;

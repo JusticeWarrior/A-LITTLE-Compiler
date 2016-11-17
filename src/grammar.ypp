@@ -18,6 +18,7 @@
 
   #define str_arr_t std::vector<char*>
   #define sym_arr_t std::list<Symbol*>
+  #define expr_list_t std::list<DataObject*>
   //#define half_expr_t std::pair<int, DataObject*>
 
   #undef yyparse
@@ -59,6 +60,9 @@
 
   // ConditionObject*
   void* condition_obj;
+
+  // expr_list_t*
+  void * expr_list_obj;
 
 
 }
@@ -128,6 +132,9 @@
 
 %type	  <comp_op>   compop
 %type     <condition_obj>      cond
+
+%type	  <expr_list_obj> expr_list
+%type	  <expr_list_obj> expr_list_tail
 
 %%
   /* Program */
@@ -360,7 +367,12 @@
     }
     ;
   return_stmt
-    : RETURN expr SEMICOLON 
+    : RETURN expr SEMICOLON {
+	DataObject* data_object = static_cast<DataObject*>($2);
+	parser.iri_list_push_back(IRI::create(
+	  IRI::RET, data_object->get_operand()
+	));
+      }
     ;
 
   /* Expressions */
@@ -446,7 +458,7 @@
       //free($1); $$=0;
       //
       //HACK CODE
-
+/*
 	Operand int_literal = Operand(Operand::LITERAL, "1.0");
 	int_literal.DataType = Operand::FLOAT;
 	DataObject* data_object = new DataObject(DataObject::FLOAT); // Store this in a temp register
@@ -455,16 +467,57 @@
 	parser.iri_list_push_back(iri);
 	$$ = static_cast<void*>(data_object);
 	free($1);
-      
+	*/
+	expr_list_t* expr_list = static_cast<expr_list_t*>($3);
+	IRI* new_iri;
+
+	// 1 PUSH RETURN VALUE
+	parser.iri_list_push_back(IRI::create(IRI::PUSH,
+	  Operand(Operand::LABEL, "")
+	));
+
+	// 2 PUSH PARAMETERS
+	for (auto it=expr_list->begin(); it != expr_list->end(); it++){
+	  //it-> Finish this to push stuff onto the stack.
+	  new_iri = IRI::create(IRI::PUSH, (*it)->get_operand());
+	  parser.iri_list_push_back(new_iri);
+	}
+
+	// 3 JSR TO SUBROUTINE
+	parser.iri_list_push_back(IRI::create(
+	  IRI::JSR,
+	  Operand(Operand::LABEL, $1)
+	));
+
+	// 4 POP PARAMETERS
+	for (auto it=expr_list->begin(); it != expr_list->end(); it++){
+	  new_iri = IRI::create(IRI::POP, Operand(Operand::LABEL, ""));
+	  parser.iri_list_push_back(new_iri);
+	} 
+	// 5 POP RETURN VALUE
+	DataObject* retval = new DataObject(DataObject::INT); // [???]
+	new_iri = IRI::create(IRI::POP, retval->get_operand());
+	parser.iri_list_push_back(new_iri);
+	$$ = retval;
       } 
     ;
   expr_list
-    : expr expr_list_tail 
-    | 
+    : expr expr_list_tail {
+	static_cast<expr_list_t*>($2)->push_back(
+	  static_cast<DataObject*>($1)
+	);
+	$$ = $2;
+    }
+    | {$$ = new expr_list_t();}
     ;
   expr_list_tail
-    : COMMA expr expr_list_tail 
-    | 
+    : COMMA expr expr_list_tail {
+	static_cast<expr_list_t*>($3)->push_back(
+	  static_cast<DataObject*>($2)
+	);
+	$$ = $3;
+      }
+    | {$$ = new expr_list_t();}
     ;
   primary
     : PARANTHLEFT expr PARANTHRIGHT {$$ = $2;} 

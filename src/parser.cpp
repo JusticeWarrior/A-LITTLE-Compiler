@@ -49,6 +49,11 @@ LittleParser::~LittleParser(){
     delete *iri_it;
   }
 
+  // clean up function_list
+  for(auto it = function_list.begin(); it != function_list.end(); it++) {
+    delete (*it);
+  }
+
 }
 
 void LittleParser::error(const char* err){

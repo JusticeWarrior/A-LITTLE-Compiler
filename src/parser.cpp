@@ -83,17 +83,16 @@ void LittleParser::iri_list_push_back(IRI* iri) {
 
 void LittleParser::print_ir(std::stringstream& ss) {
   std::list<IRI*>::iterator it;
-  for (it = iri_list.begin(); it != iri_list.end(); it++) {
-    (**it).PrintIRI(&ss);
+  for (auto it = function_list.begin(); it != function_list.end(); it++) {
+    (**it).print_ir(ss);
+    ss << std::endl;
   }
 }
 
 void LittleParser::print_assembly(std::stringstream& ss) {
-  std::list<IRI*>::iterator it;
-  for (it = iri_list.begin(); it != iri_list.end(); it++) {
-    (**it).PrintAssembly(&ss);
+  for (auto it = function_list.begin(); it != function_list.end(); it++) {
+    (**it).print_assembly(ss);
   }
-  ss << "sys halt" << std::endl;
 }
 
 void LittleParser::push_label(int label) {
@@ -125,11 +124,6 @@ void LittleParser::set_argc(int argc) {
 }
 
 void LittleParser::finish_function() {
-  std::cerr << "Finished function " << current_function().name << std::endl;
-  std::cerr << "Params: " << current_function().num_params << std::endl;
-  std::cerr << "Locals: " << current_function().get_num_locals() << std::endl;
-  std::cerr << "Temps: " <<  current_function().get_num_temps() << std::endl;
-  std::stringstream ss;
   current_function().finish();
 }
 

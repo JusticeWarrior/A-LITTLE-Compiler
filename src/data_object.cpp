@@ -29,7 +29,7 @@ Operand DataObject::get_operand() {
     operand.Offset = 12435; // Fix this later
   }
   else if (symbol->Context == Symbol::GLOBAL)
-    operand =  Operand(Operand::VARIABLE, name);
+    operand =  Operand(Operand::VARIABLE, symbol->Name);
   else if (symbol->Context == Symbol::LOCAL)
     operand =  Operand(Operand::LOCAL, symbol->local_variable_number);
   else

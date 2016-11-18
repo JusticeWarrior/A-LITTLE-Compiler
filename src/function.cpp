@@ -34,12 +34,16 @@ int Function::calc_local_offset(int local_num) {
   return -local_num;
 }
 
+int Function::calc_return_offset() {
+  return 6 + num_params;
+}
+
 void Function::finish(){
-  std::stringstream ss;
+ // std::stringstream ss;
   // Add link statement
   iri_list.push_front(IRI::create(
     IRI::LINK, Operand(Operand::LITERAL, std::to_string(
-      static_cast<long long>(num_params)
+      static_cast<long long>(get_num_locals())
     ))
   ));
   // Add label
@@ -56,9 +60,22 @@ void Function::finish(){
       if (op->Type == Operand::REGISTER) {
 	op->Offset = calc_temp_offset(op->Reg);
       }
+      if (op->Type == Operand::RETURN) {
+	op->Offset = calc_return_offset();
+      }
     }
-    (*it)->PrintAssembly(&ss); // [???]
+   // (*it)->PrintAssembly(&ss); // [???]
   }
-  std::cerr << ss.rdbuf(); // [???]
+  //std::cerr << ss.rdbuf(); // [???]
 
+}
+
+void Function::print_ir(std::stringstream& ss) {
+  for (auto i = iri_list.begin(); i != iri_list.end(); i++)
+    (**i).PrintIRI(&ss);
+}
+
+void Function::print_assembly(std::stringstream& ss) {
+  for (auto i = iri_list.begin(); i != iri_list.end(); i++)
+    (**i).PrintAssembly(&ss);
 }

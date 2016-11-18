@@ -1,5 +1,6 @@
 #include <string>
 #include <list>
+#include <sstream>
 #include "iri.hpp"
 
 struct Function {
@@ -16,6 +17,10 @@ struct Function {
   int calc_temp_offset(int temp_num);
   int calc_param_offset(int param_num);
   int calc_local_offset(int local_num);
+  int calc_return_offset();
+
+  void print_ir(std::stringstream& ss);
+  void print_assembly(std::stringstream& ss);
 
   void finish();
   

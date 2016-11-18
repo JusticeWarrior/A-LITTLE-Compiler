@@ -117,6 +117,7 @@
 %type	  <sym_arr> param_decl_tail
 %type	  <sym>	    param_decl
 %type     <int_val> var_type
+%type     <int_val> any_type
 
 %type	  <op>	    mulop
 %type     <op>	    addop
@@ -199,7 +200,7 @@
     ;
   any_type
     : var_type 
-    | VOID 
+    | VOID {$$ = Symbol::VOID;} 
     ;
   id_list
     : id id_tail {
@@ -275,8 +276,19 @@
     ;
   func_head
     : FUNCTION any_type id {
+      Symbol::T t;
+      // First, add the function as a symbol to the current scope:
+      Symbol symbol = Symbol($3, static_cast<Symbol::Types>($2), t);
+      symbol.Context = Symbol::FUNCTION;
+      parser.table_factory.insert_symbol (symbol);
+
+      // Next, add a new symbol table for the function
       parser.table_factory.push_table($3);
+
+      // Now create an object to hold the iri code for the function
       parser.start_function($3);
+
+      // Free the id
       free($3);
     }
     ;
@@ -359,7 +371,7 @@
 	  throw "Symbol not found!";
 	DataObject data_object = DataObject(symbol);
 	iri = IRI::create(
-	  data_object.data_type == DataObject::FLOAT ? IRI::WRITEF : IRI::WRITEI,
+	  data_object.data_type == DataObject::FLOAT ? IRI::WRITEF : (data_object.data_type == DataObject::STRING ? IRI::WRITES : IRI::WRITEI),
 	  data_object.get_operand()
 	);
 	parser.iri_list_push_back(iri);
@@ -368,9 +380,17 @@
     ;
   return_stmt
     : RETURN expr SEMICOLON {
+	IRI* iri;
+	IRI::Types type;
 	DataObject* data_object = static_cast<DataObject*>($2);
+	if (data_object->data_type == DataObject::FLOAT)
+	  type = IRI::STOREF;
+	else
+	  type = IRI::STOREI;
+	iri = IRI::create(type, data_object->get_operand(), Operand(Operand::RETURN, 0xDEADBEEF));
+	parser.iri_list_push_back(iri);
 	parser.iri_list_push_back(IRI::create(
-	  IRI::RET, data_object->get_operand()
+	  IRI::RET, Operand(Operand::LABEL, "")
 	));
       }
     ;
@@ -454,20 +474,7 @@
     ;
   call_expr
     : id PARANTHLEFT expr_list PARANTHRIGHT {
-      // OLD CODE
-      //free($1); $$=0;
-      //
-      //HACK CODE
-/*
-	Operand int_literal = Operand(Operand::LITERAL, "1.0");
-	int_literal.DataType = Operand::FLOAT;
-	DataObject* data_object = new DataObject(DataObject::FLOAT); // Store this in a temp register
-	parser.data_object_set.register_object(data_object);
-	IRI* iri = IRI::create(IRI::STOREF, int_literal, data_object->get_operand());
-	parser.iri_list_push_back(iri);
-	$$ = static_cast<void*>(data_object);
-	free($1);
-	*/
+
 	expr_list_t* expr_list = static_cast<expr_list_t*>($3);
 	IRI* new_iri;
 
@@ -495,7 +502,13 @@
 	  parser.iri_list_push_back(new_iri);
 	} 
 	// 5 POP RETURN VALUE
-	DataObject* retval = new DataObject(DataObject::INT); // [???]
+	Symbol* sym = parser.table_factory.get_symbol($1);//[???] What if this is void?
+	DataObject::DataType type;
+	switch(sym->Type) {
+	  case Symbol::FLOAT: type = DataObject::FLOAT; break;
+	  default: type = DataObject::INT; break;
+	}
+	DataObject* retval = new DataObject(type); // [???]
 	new_iri = IRI::create(IRI::POP, retval->get_operand());
 	parser.iri_list_push_back(new_iri);
 	$$ = retval;
@@ -529,20 +542,24 @@
 	  throw "symbol not in table!";
 	data_object = new DataObject(sym);
 	parser.data_object_set.register_object(data_object);
-	
-	DataObject* temporary;
-	temporary = new DataObject(data_object->data_type);
-	// Generate move from variable to temporary
-	// This could be done only on assignment if necessary to make things faster
-	
-	parser.data_object_set.register_object(temporary);
-	if (temporary->data_type == DataObject::FLOAT)
-	  iri = IRI::create(IRI::STOREF, data_object->get_operand(), temporary->get_operand());
-	else
-	  iri = IRI::create(IRI::STOREI, data_object->get_operand(), temporary->get_operand());
-	parser.iri_list_push_back(iri);
+	if (data_object->data_type != DataObject::STRING) {
+	  DataObject* temporary;
+	  temporary = new DataObject(data_object->data_type);
+	  // Generate move from variable to temporary
+	  // This could be done only on assignment if necessary to make things faster
+	  
+	  parser.data_object_set.register_object(temporary);
+	  if (temporary->data_type == DataObject::FLOAT)
+	    iri = IRI::create(IRI::STOREF, data_object->get_operand(), temporary->get_operand());
+	  else
+	    iri = IRI::create(IRI::STOREI, data_object->get_operand(), temporary->get_operand());
+	  parser.iri_list_push_back(iri);
 
-	$$ = static_cast<void*>(temporary);
+	  $$ = static_cast<void*>(temporary);
+	}
+	else {
+	  $$ = static_cast<void*>(data_object);
+	}
 	free($1);
       }
     | INTLITERAL {

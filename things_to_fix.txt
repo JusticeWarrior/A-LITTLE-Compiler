@@ -1,0 +1,5 @@
+1. Checking that the number of parameters passed to a function (and the type) is correct
+2. Trying to assign a function that returns void to something (it might work in some cases, but it
+souldn't)
+3. Redeclaring the same function
+4. calling a function that doesnt exist

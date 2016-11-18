@@ -10,8 +10,8 @@ class Symbol{
 			char* s;
 			float f;
 		};
-		enum Types { INT, STRING, FLOAT };
-		enum Contexts {GLOBAL, LOCAL, PARAMETER};
+		enum Types { INT, STRING, FLOAT, VOID};
+		enum Contexts {GLOBAL, LOCAL, PARAMETER, FUNCTION};
 		Symbol(std::string name, Types type, T value);
 		Symbol(const Symbol& sym);
 		~Symbol();

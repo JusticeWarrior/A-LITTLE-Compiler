@@ -46,6 +46,11 @@ void Table::PrintSymbols(std::stringstream* stream) {
 void Table::PrintDeclarations(std::stringstream* stream) { 
   std::list<Symbol>::iterator it;
   for (it = symbols.begin(); it != symbols.end(); it++) {
-    *stream << "var " << (*it).Name << std::endl;
+    if ((*it).Context == Symbol::FUNCTION)
+      continue;
+    if ((*it).Type == Symbol::STRING)
+      *stream << "str " <<  (*it).Name << " " << (*it).Value.s <<  std::endl;
+    else
+      *stream << "var " << (*it).Name << std::endl;
   }
 }

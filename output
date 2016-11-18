@@ -1,0 +1,164 @@
+;IR code
+;LABEL factorial
+;LINK2
+;STOREI $P1 $T1
+;STOREI 1 $T2
+;NE $T1 $T2 L1
+;STOREI 1 $T3
+;STOREI $T3 $R
+;RET
+;JUMP L0
+;LABEL L1
+;STOREI $P1 $T4
+;STOREI 1 $T5
+;SUBI $T4 $T5 $T6
+;PUSH 
+;PUSH $T6
+;JSR factorial
+;POP 
+;POP $T7
+;STOREI $T7 $L2
+;STOREI $L2 $T8
+;STOREI $P1 $T9
+;MULTI $T8 $T9 $T10
+;STOREI $T10 $L1
+;JUMP L0
+;LABEL L2
+;LABEL L0
+;STOREI $L1 $T11
+;STOREI $T11 $R
+;RET
+
+;LABEL main
+;LINK2
+;WRITES input
+;READI $L1
+;STOREI $L1 $T1
+;STOREI 1 $T2
+;NE $T1 $T2 L4
+;STOREI 1 $T3
+;STOREI $T3 $L2
+;JUMP L3
+;LABEL L4
+;STOREI $L1 $T4
+;STOREI 1 $T5
+;LE $T4 $T5 L5
+;STOREI $L1 $T6
+;PUSH 
+;PUSH $T6
+;JSR factorial
+;POP 
+;POP $T7
+;STOREI $T7 $L2
+;JUMP L3
+;LABEL L5
+;STOREI 0 $T8
+;STOREI $T8 $L2
+;JUMP L3
+;LABEL L6
+;LABEL L3
+;WRITEI $L2
+;WRITES eol
+;STOREI 0 $T9
+;STOREI $T9 $R
+;RET
+
+;tiny code
+str input "Please enter an integer number: "
+str eol "\n"
+push
+push r0
+push r1
+push r2
+push r3
+jsr main
+sys halt
+label factorial
+link 2
+move $6 r1
+move 1 r2
+cmpi r1 r2
+jne L1
+move 1 r3
+move r3 $7
+unlnk
+ret
+jmp L0
+label L1
+move $6 r4
+move 1 r5
+move r4 r0
+subi r5 r0
+move r0 r6
+push 
+push r6
+push r0
+push r1
+push r2
+push r3
+jsr factorial
+pop r3
+pop r2
+pop r1
+pop r0
+pop 
+pop r7
+move r7 $-2
+move $-2 r8
+move $6 r9
+move r8 r0
+muli r9 r0
+move r0 r10
+move r10 $-1
+jmp L0
+label L2
+label L0
+move $-1 r11
+move r11 $7
+unlnk
+ret
+label main
+link 2
+sys writes input
+sys readi $-1
+move $-1 r1
+move 1 r2
+cmpi r1 r2
+jne L4
+move 1 r3
+move r3 $-2
+jmp L3
+label L4
+move $-1 r4
+move 1 r5
+cmpi r4 r5
+jle L5
+move $-1 r6
+push 
+push r6
+push r0
+push r1
+push r2
+push r3
+jsr factorial
+pop r3
+pop r2
+pop r1
+pop r0
+pop 
+pop r7
+move r7 $-2
+jmp L3
+label L5
+move 0 r8
+move r8 $-2
+jmp L3
+label L6
+label L3
+sys writei $-2
+sys writes eol
+move 0 r9
+move r9 $6
+unlnk
+ret
+

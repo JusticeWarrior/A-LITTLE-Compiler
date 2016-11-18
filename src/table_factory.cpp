@@ -24,7 +24,6 @@ bool TableFactory::insert_symbol(Symbol sym){
   }
   else{
     if (scope_stack.size() > 1 && sym.Context == Symbol::GLOBAL) {
-      std::cerr << "Finished local named " << sym.Name << std::endl;
       sym.Context = Symbol::LOCAL;
       sym.local_variable_number = DataObject::parser->current_function().get_next_local();
     }
@@ -64,6 +63,10 @@ void TableFactory::print_table_stack_trace(std::stringstream& ss_out) {
 }
 
 void TableFactory::print_global_declarations(std::stringstream& ss_out) {
+  // Print out the global declarations
   ss_out << global_dec->rdbuf();
+
+  // Add to it the initial code to jump to main and jump out
+  ss_out << "push\npush r0\npush r1\npush r2\npush r3\njsr main\nsys halt" << std::endl;
 }
 

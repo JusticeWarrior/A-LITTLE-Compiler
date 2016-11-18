@@ -1,71 +1,74 @@
 ;IR code
-;LABEL factorial
-;LINK2
-;STOREI $P1 $T1
-;STOREI 1 $T2
-;NE $T1 $T2 L1
-;STOREI 1 $T3
-;STOREI $T3 $R
+;LABEL add
+;LINK1
+;STOREF $P1 $T1
+;STOREF $P2 $T2
+;ADDF $T1 $T2 $T3
+;STOREF $T3 $L1
+;STOREF $L1 $T4
+;STOREF $T4 $R
 ;RET
-;JUMP L0
-;LABEL L1
-;STOREI $P1 $T4
-;STOREI 1 $T5
-;SUBI $T4 $T5 $T6
-;PUSH 
-;PUSH $T6
-;JSR factorial
-;POP 
-;POP $T7
-;STOREI $T7 $L2
-;STOREI $L2 $T8
-;STOREI $P1 $T9
-;MULTI $T8 $T9 $T10
-;STOREI $T10 $L1
-;JUMP L0
-;LABEL L2
-;LABEL L0
-;STOREI $L1 $T11
-;STOREI $T11 $R
+
+;LABEL multiply
+;LINK1
+;STOREF $P1 $T1
+;STOREF $P2 $T2
+;MULTF $T1 $T2 $T3
+;STOREF $T3 $L1
+;STOREF $L1 $T4
+;STOREF $T4 $R
 ;RET
 
 ;LABEL main
-;LINK2
-;WRITES input
-;READI $L1
-;STOREI $L1 $T1
-;STOREI 1 $T2
-;NE $T1 $T2 L4
-;STOREI 1 $T3
-;STOREI $T3 $L2
-;JUMP L3
-;LABEL L4
-;STOREI $L1 $T4
-;STOREI 1 $T5
-;LE $T4 $T5 L5
-;STOREI $L1 $T6
+;LINK5
+;WRITES intro
+;WRITES first
+;READF $L1
+;WRITES second
+;READF $L2
+;WRITES third
+;READF $L3
+;STOREF $L1 $T1
+;STOREF $L2 $T2
 ;PUSH 
-;PUSH $T6
-;JSR factorial
+;PUSH $T2
+;PUSH $T1
+;JSR multiply
 ;POP 
-;POP $T7
-;STOREI $T7 $L2
-;JUMP L3
-;LABEL L5
-;STOREI 0 $T8
-;STOREI $T8 $L2
-;JUMP L3
-;LABEL L6
-;LABEL L3
-;WRITEI $L2
+;POP 
+;POP $T3
+;STOREF $T3 $L5
+;STOREF $L5 $T4
+;STOREF $L3 $T5
+;PUSH 
+;PUSH $T5
+;PUSH $T4
+;JSR add
+;POP 
+;POP 
+;POP $T6
+;STOREF $T6 $L4
+;WRITEF $L1
+;WRITES star
+;WRITEF $L2
+;WRITES plus
+;WRITEF $L3
+;WRITES equal
+;WRITEF $L4
 ;WRITES eol
-;STOREI 0 $T9
-;STOREI $T9 $R
+;STOREI 0 $T7
+;STOREI $T7 $R
 ;RET
 
 ;tiny code
-str input "Please enter an integer number: "
+str intro "You will be asked for three float numbers\n"
+str first "Please enter the first float number: "
+str second "Please enter the second float number: "
+str third "Please enter the third float number: "
 str eol "\n"
+str star "*"
+str plus "+"
+str equal "="
 push
 push r0
 push r1
@@ -73,92 +76,85 @@ push r2
 push r3
 jsr main
 sys halt
-label factorial
-link 2
-move $6 r1
-move 1 r2
-cmpi r1 r2
-jne L1
-move 1 r3
-move r3 $7
+label add
+link 1
+move $7 r1
+move $6 r2
+move r1 r0
+addr r2 r0
+move r0 r3
+move r3 $-1
+move $-1 r4
+move r4 $8
 unlnk
 ret
-jmp L0
-label L1
-move $6 r4
-move 1 r5
-move r4 r0
-subi r5 r0
-move r0 r6
-push 
-push r6
-push r0
-push r1
-push r2
-push r3
-jsr factorial
-pop r3
-pop r2
-pop r1
-pop r0
-pop 
-pop r7
-move r7 $-2
-move $-2 r8
-move $6 r9
-move r8 r0
-muli r9 r0
-move r0 r10
-move r10 $-1
-jmp L0
-label L2
-label L0
-move $-1 r11
-move r11 $7
+label multiply
+link 1
+move $7 r1
+move $6 r2
+move r1 r0
+mulr r2 r0
+move r0 r3
+move r3 $-1
+move $-1 r4
+move r4 $8
 unlnk
 ret
 label main
-link 2
-sys writes input
-sys readi $-1
+link 5
+sys writes intro
+sys writes first
+sys readf $-1
+sys writes second
+sys readf $-2
+sys writes third
+sys readf $-3
 move $-1 r1
-move 1 r2
-cmpi r1 r2
-jne L4
-move 1 r3
-move r3 $-2
-jmp L3
-label L4
-move $-1 r4
-move 1 r5
-cmpi r4 r5
-jle L5
-move $-1 r6
+move $-2 r2
 push 
-push r6
+push r2
+push r1
 push r0
 push r1
 push r2
 push r3
-jsr factorial
+jsr multiply
 pop r3
 pop r2
 pop r1
 pop r0
 pop 
-pop r7
-move r7 $-2
-jmp L3
-label L5
-move 0 r8
-move r8 $-2
-jmp L3
-label L6
-label L3
-sys writei $-2
+pop 
+pop r3
+move r3 $-5
+move $-5 r4
+move $-3 r5
+push 
+push r5
+push r4
+push r0
+push r1
+push r2
+push r3
+jsr add
+pop r3
+pop r2
+pop r1
+pop r0
+pop 
+pop 
+pop r6
+move r6 $-4
+sys writer $-1
+sys writes star
+sys writer $-2
+sys writes plus
+sys writer $-3
+sys writes equal
+sys writer $-4
 sys writes eol
-move 0 r9
-move r9 $6
+move 0 r7
+move r7 $6
 unlnk
 ret
 

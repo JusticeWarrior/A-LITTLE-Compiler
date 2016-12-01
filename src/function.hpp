@@ -3,6 +3,7 @@
 #include <sstream>
 #include "iri.hpp"
 #include "operand.hpp"
+#include "register.hpp"
 
 struct Function {
   Function(std::string asdf);
@@ -27,6 +28,11 @@ struct Function {
 
   void finish();
   
+  Register reg1;
+  Register reg2;
+  Register reg3;
+  Register reg4;
+
   private:
     int next_temp;
     int next_local;

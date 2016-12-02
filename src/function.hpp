@@ -27,6 +27,9 @@ struct Function {
   void print_assembly(std::stringstream& ss);
 
   void finish();
+
+  void generate_cfg();
+  void calculate_liveness();
   
   private:
     int next_temp;

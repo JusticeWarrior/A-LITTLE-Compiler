@@ -1,6 +1,8 @@
 #include "function.hpp" 
 #include <sstream>
 #include <iostream>
+#include <map>
+#include <set>
 
 Function::Function(std::string name) :
   next_temp(1), next_local(1), name(name), num_params(0)
@@ -73,6 +75,9 @@ void Function::finish(){
    // (*it)->PrintAssembly(&ss); // [???]
   }
   //std::cerr << ss.rdbuf(); // [???]
+  //
+  generate_cfg();
+  calculate_liveness();
 
 }
 
@@ -84,4 +89,62 @@ void Function::print_ir(std::stringstream& ss) {
 void Function::print_assembly(std::stringstream& ss) {
   for (auto i = iri_list.begin(); i != iri_list.end(); i++)
     (**i).PrintAssembly(&ss);
+}
+
+
+
+
+
+void Function::generate_cfg() {
+  // Step 1, build  a map of all of the labels
+  std::map<std::string, IRI*> label_dict;
+  for (auto it = iri_list.begin(); it != iri_list.end(); it++) {
+    if ((*it)->Type == IRI::LABEL)
+      label_dict[(*it)->Operands[0].ToString()] = *it;
+  }
+
+  // Step 2, connect all of the predecessors and successors
+  for (auto it = iri_list.begin(); it != iri_list.end(); it++) {
+    IRI* iri = *it;
+    if (std::next(it) != iri_list.end() && (*it)->Type != IRI::JUMP) {
+      iri->successor_set.insert( *std::next(it) );
+      (*std::next(it))->predecessor_set.insert( iri);
+    }
+    if ( iri->Type == IRI::JUMP ) {
+      iri->successor_set.insert( label_dict[iri->Operands[0].ToString()] );
+      label_dict[iri->Operands[0].ToString()]->predecessor_set.insert(iri);
+    }
+    if (
+      iri->Type == IRI::GT ||
+      iri->Type == IRI::GE ||
+      iri->Type == IRI::LT ||
+      iri->Type == IRI::LE ||
+      iri->Type == IRI::EQ ||
+      iri->Type == IRI::NE
+    ) {
+      iri->successor_set.insert(label_dict[iri->Operands[2].ToString()]);
+      label_dict[iri->Operands[2].ToString()]->predecessor_set.insert(iri);
+    }
+      
+  }
+}
+
+void Function::calculate_liveness() {
+  // Calulate all of the gen sets amd kill sets
+  for (auto it = iri_list.begin(); it != iri_list.end(); it++) {
+    (*it)->populate_gen_kill();
+  }
+
+  // Go through the worklist algorithm
+  IRI* iri;
+  bool changed;
+  std::set<IRI*> work_list;
+  work_list.insert(iri_list.begin(), iri_list.end());
+  while(work_list.size() != 0) {
+    iri = *work_list.begin();
+    work_list.erase(work_list.begin());
+
+    changed = iri->update_liveness_set();
+    if (changed) work_list.insert(iri->predecessor_set.begin(), iri->predecessor_set.end());
+  }
 }

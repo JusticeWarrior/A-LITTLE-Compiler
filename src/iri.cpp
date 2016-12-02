@@ -85,6 +85,12 @@ void IRI::PrintIRI(std::stringstream* stream) {
 		*stream << ";WRITES " << Operands[0].ToString() << std::endl;
 	else
 		throw std::string("Unrecognized IRI");
+	// Print the liveness set as well
+	*stream << ";{";
+	for (auto it = live_set.begin(); it != live_set.end(); it++) {
+	  *stream << *it << ", ";
+	}
+	  *stream << "}" << std::endl << std::endl;
 }
 
 void IRI::PrintAssembly(std::stringstream* stream) {

@@ -92,9 +92,6 @@ void Function::print_assembly(std::stringstream& ss) {
 }
 
 
-
-
-
 void Function::generate_cfg() {
   // Step 1, build  a map of all of the labels
   std::map<std::string, IRI*> label_dict;
@@ -146,5 +143,37 @@ void Function::calculate_liveness() {
 
     changed = iri->update_liveness_set();
     if (changed) work_list.insert(iri->predecessor_set.begin(), iri->predecessor_set.end());
+  }
+} //
+
+void Function::register_allocate(Operand* ensure1, Operand* ensure2, Operand* allocate) {
+  if (ensure1->Type != Operand::NOTHING) {
+  	if (reg1.Name == ensure1.ToString()) {
+	  ensure1->Reg = 0;
+	  ensure1->Type = Operand::REGISTER;
+	}
+  	else if (reg2.Name == ensure1.ToString()) {
+	  ensure1->Reg = 1;
+	  ensure1->Type = Operand::REGISTER;
+	}
+  	else if (reg3.Name == ensure1.ToString()) {
+	  ensure1->Reg = 2;
+	  ensure1->Type = Operand::REGISTER;
+	}
+  	else if (reg4.Name == ensure1.ToString()) {
+	  ensure1->Reg = 3;
+	  ensure1->Type = Operand::REGISTER;
+	}
+	else {
+	  
+	}
+  }
+  
+  if (ensure2->Type != Operand::NOTHING) {
+  	
+  }
+  
+  if (allocate->Type != Operand::NOTHING) {
+  	
   }
 }

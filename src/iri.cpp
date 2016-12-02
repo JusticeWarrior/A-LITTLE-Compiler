@@ -95,91 +95,98 @@ void IRI::PrintIRI(std::stringstream* stream) {
 }
 
 void IRI::PrintAssembly(std::stringstream* stream) {
-	if (Type == STOREI)
-		_Function.register_allocate(stream, live_set, &Operands[0], Operand::Operand(), Operand::Operand());
+	Operand::Operand dummy;
+	if (Type == STOREI) {
+		_Function->register_allocate(stream, live_set, &Operands[0], &dummy, &dummy);
 		*stream << "move " << Operands[0].ToAssemblyString() << " " << Operands[1].ToAssemblyString() << std::endl;
-	else if (Type == READI)
-		_Function.register_allocate(stream, live_set, Operand::Operand(), Operand::Operand(), &Operands[0]);
+	}
+	else if (Type == READI){
+		_Function->register_allocate(stream, live_set, &dummy, &dummy, &Operands[0]);
 		*stream << "sys readi " << Operands[0].ToAssemblyString() << std::endl;
-	else if (Type == READF)
-		_Function.register_allocate(stream, live_set, Operand::Operand(), Operand::Operand(), &Operands[0]);
+	}
+	else if (Type == READF){
+		_Function->register_allocate(stream, live_set, &dummy, &dummy, &Operands[0]);
 		*stream << "sys readr " << Operands[0].ToAssemblyString() << std::endl;
-	else if (Type == WRITEI)
-		_Function.register_allocate(stream, live_set, &Operands[0], Operand::Operand(), Operand::Operand());
+	}
+	else if (Type == WRITEI){
+		_Function->register_allocate(stream, live_set, &Operands[0], &dummy, &dummy);
 		*stream << "sys writei " << Operands[0].ToAssemblyString() << std::endl;
+	}
 	else if (Type == ADDI) {
-		_Function.register_allocate(stream, live_set, &Operands[0], &Operands[1], &Operands[2]);
+		_Function->register_allocate(stream, live_set, &Operands[0], &Operands[1], &Operands[2]);
 		*stream << "move " << Operands[1].ToAssemblyString() << Operands[2].ToAssemblyString()  << std::endl;
 		*stream << "addi " << Operands[0].ToAssemblyString() << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == MULTI) {
-		_Function.register_allocate(stream, live_set, &Operands[0], &Operands[1], &Operands[2]);
+		_Function->register_allocate(stream, live_set, &Operands[0], &Operands[1], &Operands[2]);
 		*stream << "move " << Operands[1].ToAssemblyString() << Operands[2].ToAssemblyString()  << std::endl;
 		*stream << "multi " << Operands[0].ToAssemblyString() << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == SUBI) {
-		_Function.register_allocate(stream, live_set, &Operands[0], &Operands[1], &Operands[2]);
+		_Function->register_allocate(stream, live_set, &Operands[0], &Operands[1], &Operands[2]);
 		*stream << "move " << Operands[1].ToAssemblyString() << Operands[2].ToAssemblyString()  << std::endl;
 		*stream << "subi " << Operands[0].ToAssemblyString() << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == DIVI) {
-		_Function.register_allocate(stream, live_set, &Operands[0], &Operands[1], &Operands[2]);
+		_Function->register_allocate(stream, live_set, &Operands[0], &Operands[1], &Operands[2]);
 		*stream << "move " << Operands[1].ToAssemblyString() << Operands[2].ToAssemblyString()  << std::endl;
 		*stream << "divi " << Operands[0].ToAssemblyString() << Operands[2].ToAssemblyString() << std::endl;
 	}
-	else if (Type == STOREF)
-		_Function.register_allocate(stream, live_set, &Operands[0], Operand::Operand(), Operand::Operand());
+	else if (Type == STOREF){
+		_Function->register_allocate(stream, live_set, &Operands[0], &dummy, &dummy);
 		*stream << "move " << Operands[0].ToAssemblyString() << " " << Operands[1].ToAssemblyString() << std::endl;
-	else if (Type == WRITEF)
-		_Function.register_allocate(stream, live_set, &Operands[0], Operand::Operand(), Operand::Operand());
+	}
+	else if (Type == WRITEF){
+		_Function->register_allocate(stream, live_set, &Operands[0], &dummy, &dummy);
 		*stream << "sys writer " << Operands[0].ToAssemblyString() << std::endl;
+	}
 	else if (Type == ADDF) {
-		_Function.register_allocate(stream, live_set, &Operands[0], &Operands[1], &Operands[2]);
+		_Function->register_allocate(stream, live_set, &Operands[0], &Operands[1], &Operands[2]);
 		*stream << "move " << Operands[1].ToAssemblyString() << Operands[2].ToAssemblyString()  << std::endl;
 		*stream << "addr " << Operands[0].ToAssemblyString() << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == MULTF) {
-		_Function.register_allocate(stream, live_set, &Operands[0], &Operands[1], &Operands[2]);
+		_Function->register_allocate(stream, live_set, &Operands[0], &Operands[1], &Operands[2]);
 		*stream << "move " << Operands[1].ToAssemblyString() << Operands[2].ToAssemblyString()  << std::endl;
 		*stream << "mulr " << Operands[0].ToAssemblyString() << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == SUBF) {
-		_Function.register_allocate(stream, live_set, &Operands[0], &Operands[1], &Operands[2]);
+		_Function->register_allocate(stream, live_set, &Operands[0], &Operands[1], &Operands[2]);
 		*stream << "move " << Operands[1].ToAssemblyString() << Operands[2].ToAssemblyString()  << std::endl;
 		*stream << "subr " << Operands[0].ToAssemblyString() << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == DIVF) {
-		_Function.register_allocate(stream, live_set, &Operands[0], &Operands[1], &Operands[2]);
+		_Function->register_allocate(stream, live_set, &Operands[0], &Operands[1], &Operands[2]);
 		*stream << "move " << Operands[1].ToAssemblyString() << Operands[2].ToAssemblyString()  << std::endl;
 		*stream << "divr " << Operands[0].ToAssemblyString() << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == GT) {
-		_Function.register_allocate(stream, live_set, &Operands[0], &Operands[1], Operand::Operand());
+		_Function->register_allocate(stream, live_set, &Operands[0], &Operands[1], &dummy);
 		*stream << get_comparison() << std::endl;
 		*stream << "jgt " << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == GE) {
-		_Function.register_allocate(stream, live_set, &Operands[0], &Operands[1], Operand::Operand());
+		_Function->register_allocate(stream, live_set, &Operands[0], &Operands[1], &dummy);
 		*stream << get_comparison() << std::endl;
 		*stream << "jge " << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == LT) {
-		_Function.register_allocate(stream, live_set, &Operands[0], &Operands[1], Operand::Operand());
+		_Function->register_allocate(stream, live_set, &Operands[0], &Operands[1], &dummy);
 		*stream << get_comparison() << std::endl;
 		*stream << "jlt " << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == LE) {
-		_Function.register_allocate(stream, live_set, &Operands[0], &Operands[1], Operand::Operand());
+		_Function->register_allocate(stream, live_set, &Operands[0], &Operands[1], &dummy);
 		*stream << get_comparison() << std::endl;
 		*stream << "jle " << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == NE) {
-		_Function.register_allocate(stream, live_set, &Operands[0], &Operands[1], Operand::Operand());
+		_Function->register_allocate(stream, live_set, &Operands[0], &Operands[1], &dummy);
 		*stream << get_comparison() << std::endl;
 		*stream << "jne " << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == EQ) {
-		_Function.register_allocate(stream, live_set, &Operands[0], &Operands[1], Operand::Operand());
+		_Function->register_allocate(stream, live_set, &Operands[0], &Operands[1], &dummy);
 		*stream << get_comparison() << std::endl;
 		*stream << "jeq " << Operands[2].ToAssemblyString() << std::endl;
 	}
@@ -203,11 +210,11 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 		}
 	}
 	else if (Type == PUSH) {
-		_Function.register_allocate(stream, live_set, &Operands[0], Operand::Operand(), Operand::Operand());
+		_Function->register_allocate(stream, live_set, &Operands[0], &dummy, &dummy);
 		*stream << "push " << Operands[0].ToAssemblyString() << std::endl;
 	}
 	else if (Type == POP) {
-		_Function.register_allocate(stream, live_set, Operand::Operand(), Operand::Operand(), &Operands[0]);
+		_Function->register_allocate(stream, live_set, &dummy, &dummy, &Operands[0]);
 		*stream << "pop " << Operands[0].ToAssemblyString() << std::endl;
 	}
 	else if (Type == RET) {

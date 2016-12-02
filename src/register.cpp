@@ -12,4 +12,4 @@ Register::Register(int reg, std::string name)
 	:Name(name), Reg(reg) {}
 
 Register::Register(int reg)
-	:Reg(reg) {}
+	:Reg(reg), Name("") {}

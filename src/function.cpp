@@ -82,7 +82,12 @@ void Function::finish(){
    // (*it)->PrintAssembly(&ss); // [???]
   }
   //std::cerr << ss.rdbuf(); // [???]
-  //
+  
+  // Make sure everyone knows which function they're in
+  for (auto it = iri_list.begin(); it != iri_list.end(); it ++) {
+    (*it)->_Function = this;
+  }
+  // Do liveness analysis
   generate_cfg();
   calculate_liveness();
 

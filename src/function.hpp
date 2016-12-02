@@ -4,6 +4,8 @@
 #include "iri.hpp"
 #include "operand.hpp"
 #include "register.hpp"
+#include <unordered_set>
+#include <sstream>
 
 struct Function {
   Function(std::string asdf);
@@ -22,13 +24,15 @@ struct Function {
   int calc_local_offset(int local_num);
   int calc_return_offset();
 
-  void register_allocate(Operand* ensure1, Operand* ensure2, Operand* allocate);
+  void register_allocate(std::stringstream* stream, std::unordered_set<std::string> live_set, Operand* ensure1, Operand* ensure2, Operand* allocate);
 
   void print_ir(std::stringstream& ss);
   void print_assembly(std::stringstream& ss);
 
   void finish();
   
+  std::string variable_name_to_offset(std::string name);
+
   Register reg1;
   Register reg2;
   Register reg3;

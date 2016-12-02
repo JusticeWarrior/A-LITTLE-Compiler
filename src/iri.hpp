@@ -7,6 +7,8 @@
 #include <sstream>
 #include <unordered_set>
 
+class Function;
+
 class IRI{
 	public:
 		enum Types {
@@ -48,6 +50,8 @@ class IRI{
 		std::unordered_set<IRI*> successor_set;
 
 		void populate_gen_kill();
+
+		Function* _Function;
 
 		// Update the liveness set, return true if it has changed
 		bool update_liveness_set();

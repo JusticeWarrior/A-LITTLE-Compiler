@@ -79,3 +79,35 @@ void Function::print_assembly(std::stringstream& ss) {
   for (auto i = iri_list.begin(); i != iri_list.end(); i++)
     (**i).PrintAssembly(&ss);
 }
+
+void Function::register_allocate(Operand* ensure1, Operand* ensure2, Operand* allocate) {
+  if (ensure1->Type != Operand::NOTHING) {
+  	if (reg1.Name == ensure1.ToString()) {
+	  ensure1->Reg = 0;
+	  ensure1->Type = Operand::REGISTER;
+	}
+  	else if (reg2.Name == ensure1.ToString()) {
+	  ensure1->Reg = 1;
+	  ensure1->Type = Operand::REGISTER;
+	}
+  	else if (reg3.Name == ensure1.ToString()) {
+	  ensure1->Reg = 2;
+	  ensure1->Type = Operand::REGISTER;
+	}
+  	else if (reg4.Name == ensure1.ToString()) {
+	  ensure1->Reg = 3;
+	  ensure1->Type = Operand::REGISTER;
+	}
+	else {
+	  
+	}
+  }
+  
+  if (ensure2->Type != Operand::NOTHING) {
+  	
+  }
+  
+  if (allocate->Type != Operand::NOTHING) {
+  	
+  }
+}

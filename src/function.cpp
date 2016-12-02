@@ -146,6 +146,24 @@ void Function::calculate_liveness() {
   }
 } //
 
+
+std::string Function::variable_name_to_offset(std::string name) {
+  long long offset;
+  long long reg_num;
+  if (name[0] != '$')
+    return name;
+  reg_num = std::stoi(name.erase(0,2));
+  if (name[1] == 'L')
+    offset = calc_local_offset(reg_num);
+  if (name[1] == 'P')
+    offset = calc_param_offset(reg_num);
+  if (name[1] == 'T')
+    offset = calc_temp_offset(reg_num);
+  if (name[1] == 'R')
+    offset = calc_return_offset();
+  return std::string("$") + std::to_string(offset);
+}
+
 void Function::register_allocate(Operand* ensure1, Operand* ensure2, Operand* allocate) {
   if (ensure1->Type != Operand::NOTHING) {
   	if (reg1.Name == ensure1.ToString()) {

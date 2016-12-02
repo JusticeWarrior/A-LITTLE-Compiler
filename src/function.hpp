@@ -25,11 +25,13 @@ struct Function {
   int calc_return_offset();
 
   void register_allocate(std::stringstream* stream, std::unordered_set<std::string> live_set, Operand* ensure1, Operand* ensure2, Operand* allocate);
-
   void print_ir(std::stringstream& ss);
   void print_assembly(std::stringstream& ss);
 
   void finish();
+
+  void generate_cfg();
+  void calculate_liveness();
   
   std::string variable_name_to_offset(std::string name);
 
@@ -41,6 +43,10 @@ struct Function {
   private:
     int next_temp;
     int next_local;
+
+    void write_back_if_dirty(Register* reg, std::stringstream* stream);
+    void overwrite_register(Register* reg, std::string op_name, std::stringstream* stream);
+    void ensure_variable(std::stringstream* stream, std::unordered_set<std::string> live_set, Operand* ensure1, Operand* ensure2);
 };
 
 // Types of symbols :

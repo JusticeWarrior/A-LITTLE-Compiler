@@ -43,6 +43,10 @@ struct Function {
   private:
     int next_temp;
     int next_local;
+
+    void write_back_if_dirty(Register* reg, std::stringstream* stream);
+    void overwrite_register(Register* reg, std::string op_name, std::stringstream* stream);
+    void ensure_variable(std::stringstream* stream, std::unordered_set<std::string> live_set, Operand* ensure1, Operand* ensure2);
 };
 
 // Types of symbols :

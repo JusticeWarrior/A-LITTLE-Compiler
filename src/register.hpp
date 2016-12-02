@@ -7,8 +7,11 @@ class Register{
 	public:
 		Register();
 		Register(std::string name);
+		Register(int reg, std::string name);
+		Register(int reg);
 		std::string Name;
 		int Dirty;
+		int Reg;
 };
 
 #endif

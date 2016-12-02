@@ -5,7 +5,7 @@
 
 class Operand{
 	public:
-		enum Types { REGISTER, LITERAL, LABEL, VARIABLE, LOCAL, PARAMETER, RETURN};
+		enum Types { REGISTER, LITERAL, LABEL, VARIABLE, LOCAL, PARAMETER, RETURN, NOTHING};
 		enum DataTypes {FLOAT, INT};
 		Operand(Types type, std::string value);
 		Operand(Types type, int reg);

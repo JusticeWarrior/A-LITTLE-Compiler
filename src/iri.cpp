@@ -96,48 +96,40 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 	else if (Type == WRITEI)
 		*stream << "sys writei " << Operands[0].ToAssemblyString() << std::endl;
 	else if (Type == ADDI) {
-		*stream << "move " << Operands[0].ToAssemblyString() << " r0"  << std::endl;
-		*stream << "addi " << Operands[1].ToAssemblyString() << " r0" << std::endl;
-		*stream << "move r0 " << Operands[2].ToAssemblyString() << std::endl;
+		*stream << "move " << Operands[1].ToAssemblyString() << Operands[2].ToAssemblyString()  << std::endl;
+		*stream << "addi " << Operands[0].ToAssemblyString() << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == MULTI) {
-		*stream << "move " << Operands[0].ToAssemblyString() << " r0"  << std::endl;
-		*stream << "muli " << Operands[1].ToAssemblyString() << " r0" << std::endl;
-		*stream << "move r0 " << Operands[2].ToAssemblyString() << std::endl;
+		*stream << "move " << Operands[1].ToAssemblyString() << Operands[2].ToAssemblyString()  << std::endl;
+		*stream << "multi " << Operands[0].ToAssemblyString() << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == SUBI) {
-		*stream << "move " << Operands[0].ToAssemblyString() << " r0"  << std::endl;
-		*stream << "subi " << Operands[1].ToAssemblyString() << " r0" << std::endl;
-		*stream << "move r0 " << Operands[2].ToAssemblyString() << std::endl;
+		*stream << "move " << Operands[1].ToAssemblyString() << Operands[2].ToAssemblyString()  << std::endl;
+		*stream << "subi " << Operands[0].ToAssemblyString() << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == DIVI) {
-		*stream << "move " << Operands[0].ToAssemblyString() << " r0"  << std::endl;
-		*stream << "divi " << Operands[1].ToAssemblyString() << " r0" << std::endl;
-		*stream << "move r0 " << Operands[2].ToAssemblyString() << std::endl;
+		*stream << "move " << Operands[1].ToAssemblyString() << Operands[2].ToAssemblyString()  << std::endl;
+		*stream << "divi " << Operands[0].ToAssemblyString() << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == STOREF)
 		*stream << "move " << Operands[0].ToAssemblyString() << " " << Operands[1].ToAssemblyString() << std::endl;
 	else if (Type == WRITEF)
 		*stream << "sys writer " << Operands[0].ToAssemblyString() << std::endl;
 	else if (Type == ADDF) {
-		*stream << "move " << Operands[0].ToAssemblyString() << " r0"  << std::endl;
-		*stream << "addr " << Operands[1].ToAssemblyString() << " r0" << std::endl;
-		*stream << "move r0 " << Operands[2].ToAssemblyString() << std::endl;
+		*stream << "move " << Operands[1].ToAssemblyString() << Operands[2].ToAssemblyString()  << std::endl;
+		*stream << "addr " << Operands[0].ToAssemblyString() << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == MULTF) {
-		*stream << "move " << Operands[0].ToAssemblyString() << " r0"  << std::endl;
-		*stream << "mulr " << Operands[1].ToAssemblyString() << " r0" << std::endl;
-		*stream << "move r0 " << Operands[2].ToAssemblyString() << std::endl;
+		*stream << "move " << Operands[1].ToAssemblyString() << Operands[2].ToAssemblyString()  << std::endl;
+		*stream << "mulr " << Operands[0].ToAssemblyString() << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == SUBF) {
-		*stream << "move " << Operands[0].ToAssemblyString() << " r0"  << std::endl;
-		*stream << "subr " << Operands[1].ToAssemblyString() << " r0" << std::endl;
-		*stream << "move r0 " << Operands[2].ToAssemblyString() << std::endl;
+		*stream << "move " << Operands[1].ToAssemblyString() << Operands[2].ToAssemblyString()  << std::endl;
+		*stream << "subr " << Operands[0].ToAssemblyString() << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == DIVF) {
-		*stream << "move " << Operands[0].ToAssemblyString() << " r0"  << std::endl;
-		*stream << "divr " << Operands[1].ToAssemblyString() << " r0" << std::endl;
-		*stream << "move r0 " << Operands[2].ToAssemblyString() << std::endl;
+		*stream << "move " << Operands[1].ToAssemblyString() << Operands[2].ToAssemblyString()  << std::endl;
+		*stream << "divr " << Operands[0].ToAssemblyString() << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == GT) {
 		*stream << get_comparison() << std::endl;

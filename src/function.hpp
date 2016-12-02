@@ -2,6 +2,7 @@
 #include <list>
 #include <sstream>
 #include "iri.hpp"
+#include "operand.hpp"
 
 struct Function {
   Function(std::string asdf);
@@ -19,6 +20,8 @@ struct Function {
   int calc_param_offset(int param_num);
   int calc_local_offset(int local_num);
   int calc_return_offset();
+
+  void register_allocate(Operand* ensure1, Operand* ensure2, Operand* allocate);
 
   void print_ir(std::stringstream& ss);
   void print_assembly(std::stringstream& ss);

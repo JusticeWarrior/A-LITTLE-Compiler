@@ -91,7 +91,6 @@ void Function::print_assembly(std::stringstream& ss) {
     (**i).PrintAssembly(&ss);
 }
 
-
 void Function::generate_cfg() {
   // Step 1, build  a map of all of the labels
   std::map<std::string, IRI*> label_dict;
@@ -164,8 +163,19 @@ std::string Function::variable_name_to_offset(std::string name) {
   return std::string("$") + std::to_string(offset);
 }
 
-void Function::register_allocate(Operand* ensure1, Operand* ensure2, Operand* allocate) {
+static void write_back_if_dirty(Register* reg, std::stringstream* stream) {
+  if (reg->Dirty) {
+    *stream << "move r" << std::to_string(static_cast<long long>(reg->Reg)) << " $" << variable_name_to_offset(reg->Name) << std::endl;
+  }
+}
+
+static void overwrite_register(Register* reg, std::string op_name, std::stringstream* stream) {
+    *stream << "move $" << variable_name_to_offset(op_name) << " r" << std::to_string(static_cast<long long>(reg->Reg)) << std::endl;
+}
+
+static void ensure_variable(std::stringstream* stream, std::unordered_set<std::string> live_set, Operand* ensure1, Operand* ensure2) {
   if (ensure1->Type != Operand::NOTHING) {
+  	// Check if already in register
   	if (reg1.Name == ensure1.ToString()) {
 	  ensure1->Reg = 0;
 	  ensure1->Type = Operand::REGISTER;
@@ -182,16 +192,106 @@ void Function::register_allocate(Operand* ensure1, Operand* ensure2, Operand* al
 	  ensure1->Reg = 3;
 	  ensure1->Type = Operand::REGISTER;
 	}
+	// Find the first unused register
 	else {
-	  
+	  if (live_set.find(reg1.Name) == live_set.end() && (ensure2->Type != Operand::NOTHING || ensure2.ToString() != reg1.Name)) {
+	    overwrite_register(&reg1, ensure1.ToString(), stream);
+	    reg1.Name = ensure1.ToString();
+	    ensure1->Reg = 0;
+	    ensure1->Type = Operand::REGISTER;
+	  }
+	  else if (live_set.find(reg2.Name) == live_set.end() && (ensure2->Type != Operand::NOTHING || ensure2.ToString() != reg2.Name)) {
+	    overwrite_register(&reg2, ensure1.ToString(), stream);
+	    reg2.Name = ensure1.ToString();
+	    ensure1->Reg = 1;
+	    ensure1->Type = Operand::REGISTER;
+	  }
+	  else if (live_set.find(reg3.Name) == live_set.end() && (ensure2->Type != Operand::NOTHING || ensure3.ToString() != reg3.Name)) {
+	    overwrite_register(&reg3, ensure1.ToString(), stream);
+	    reg3.Name = ensure1.ToString();
+	    ensure1->Reg = 2;
+	    ensure1->Type = Operand::REGISTER;
+	  }
+	  else if (live_set.find(reg4.Name) == live_set.end() && (ensure2->Type != Operand::NOTHING || ensure3.ToString() != reg4.Name)) {
+	    overwrite_register(&reg4, ensure1.ToString(), stream);
+	    reg4.Name = ensure1.ToString();
+	    ensure1->Reg = 3;
+	    ensure1->Type = Operand::REGISTER;
+	  }
+	  // We have to spill...
+	  else {
+	    // Find the first register not used by ensure2
+		if (ensure2->Type == Operand::NOTHING || ensure2.ToString() != reg1.Name) {
+		  // Spill r1
+	      write_back_if_dirty(&reg1, stream);
+	      overwrite_register(&reg1, ensure1.ToString(), stream);
+	      reg1.Name = ensure1.ToString();
+	      ensure1->Reg = 0;
+	      ensure1->Type = Operand::REGISTER;
+		} else {
+		  // Spill r2
+	      write_back_if_dirty(&reg2, stream);
+	      overwrite_register(&reg2, ensure1.ToString(), stream);
+	      reg2.Name = ensure1.ToString();
+	      ensure1->Reg = 1;
+	      ensure1->Type = Operand::REGISTER;
+		}
+	  }
 	}
   }
+}
+
+void Function::register_allocate(std::stringstream* stream, std::unordered_set<std::string> live_set, Operand* ensure1, Operand* ensure2, Operand* allocate) {
+  // Ensure variables
+  ensure_variable(stream, live_set, ensure1, ensure2);
+  ensure_variable(stream, live_set, ensure2, ensure1);
   
-  if (ensure2->Type != Operand::NOTHING) {
-  	
-  }
-  
+  // Allocate the third variable
   if (allocate->Type != Operand::NOTHING) {
-  	
+	// Find the first unused register
+	  if (live_set.find(reg1.Name) == live_set.end() && (ensure1->Type != Operand::NOTHING || ensure1.ToString() != reg1.Name) && (ensure2->Type != Operand::NOTHING || ensure2.ToString() != reg1.Name)) {
+	    reg1.Name = allocate.ToString();
+	    allocate->Reg = 0;
+	    allocate->Type = Operand::REGISTER;
+	  }
+	  else if (live_set.find(reg2.Name) == live_set.end() && (ensure1->Type != Operand::NOTHING || ensure1.ToString() != reg2.Name) && (ensure2->Type != Operand::NOTHING || ensure2.ToString() != reg2.Name)) {
+	    reg2.Name = allocate.ToString();
+	    allocate->Reg = 1;
+	    allocate->Type = Operand::REGISTER;
+	  }
+	  else if (live_set.find(reg3.Name) == live_set.end() && (ensure1->Type != Operand::NOTHING || ensure1.ToString() != reg3.Name) && (ensure2->Type != Operand::NOTHING || ensure3.ToString() != reg3.Name)) {
+	    reg3.Name = allocate.ToString();
+	    allocate->Reg = 2;
+	    allocate->Type = Operand::REGISTER;
+	  }
+	  else if (live_set.find(reg4.Name) == live_set.end() && (ensure1->Type != Operand::NOTHING || ensure1.ToString() != reg4.Name) && (ensure2->Type != Operand::NOTHING || ensure3.ToString() != reg4.Name)) {
+	    reg4.Name = allocate.ToString();
+	    allocate->Reg = 3;
+	    allocate->Type = Operand::REGISTER;
+	  }
+	  // We have to spill...
+	  else {
+	    // Find the first register not used by ensure2
+		if ((ensure1->Type == Operand::NOTHING || ensure1.ToString() != reg1.Name) && (ensure2->Type == Operand::NOTHING || ensure2.ToString() != reg1.Name)) {
+		  // Spill r1
+	      write_back_if_dirty(&reg1, stream);
+	      reg1.Name = allocate.ToString();
+	      allocate->Reg = 0;
+	      allocate->Type = Operand::REGISTER;
+		} else if ((ensure1->Type == Operand::NOTHING || ensure1.ToString() != reg2.Name) && (ensure2->Type == Operand::NOTHING || ensure2.ToString() != reg2.Name)) {
+		  // Spill r2
+	      write_back_if_dirty(&reg2, stream);
+	      reg2.Name = allocate.ToString();
+	      allocate->Reg = 1;
+	      allocate->Type = Operand::REGISTER;
+		} else {
+		  // Spill r3
+	      write_back_if_dirty(&reg3, stream);
+	      reg3.Name = allocate.ToString();
+	      allocate->Reg = 2;
+	      allocate->Type = Operand::REGISTER;
+		}
+	  }
+    
   }
 }

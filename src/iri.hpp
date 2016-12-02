@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <unordered_set>
 
 class IRI{
 	public:
@@ -13,7 +14,7 @@ class IRI{
 			DIVI, STOREF, WRITEF, ADDF, MULTF,
 			SUBF, DIVF, READF, READI, GT, GE,
 			LT, LE, NE, EQ, JUMP, LABEL, JSR,
-			PUSH, POP, RET, LINK, WRITES
+			PUSH, POP, RET, LINK, WRITES, DUMP
 		};
 
 		IRI(Types type, Operand op1);
@@ -36,6 +37,20 @@ class IRI{
 
 		std::vector<Operand> Operands;
 		Types Type;
+
+		// Liveness analysis
+		std::unordered_set<std::string> live_set;
+		std::unordered_set<std::string> in_set;
+		std::unordered_set<std::string> gen_set;
+		std::unordered_set<std::string> kill_set;
+
+		std::unordered_set<IRI*> predecessor_set;
+		std::unordered_set<IRI*> successor_set;
+
+		void populate_gen_kill();
+
+		// Update the liveness set, return true if it has changed
+		bool update_liveness_set();
 };
 
 #endif

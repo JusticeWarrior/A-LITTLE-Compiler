@@ -6,6 +6,12 @@ Function::Function(std::string name) :
   next_temp(1), next_local(1), name(name), num_params(0)
 {}
 
+Function::~Function() {
+  for (auto it = iri_list.begin(); it != iri_list.end(); it++) {
+    delete *it;
+  }
+}
+
 int Function::get_next_temp() {
   return next_temp++;
 }

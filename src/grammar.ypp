@@ -512,6 +512,10 @@
 	new_iri = IRI::create(IRI::POP, retval->get_operand());
 	parser.iri_list_push_back(new_iri);
 	$$ = retval;
+
+	// 5.1 Cleanup memory
+	delete expr_list;
+	free($1);
       } 
     ;
   expr_list

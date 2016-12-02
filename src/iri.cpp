@@ -92,7 +92,7 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 	else if (Type == READI)
 		*stream << "sys readi " << Operands[0].ToAssemblyString() << std::endl;
 	else if (Type == READF)
-		*stream << "sys readf " << Operands[0].ToAssemblyString() << std::endl;
+		*stream << "sys readr " << Operands[0].ToAssemblyString() << std::endl;
 	else if (Type == WRITEI)
 		*stream << "sys writei " << Operands[0].ToAssemblyString() << std::endl;
 	else if (Type == ADDI) {
@@ -192,3 +192,43 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 	else
 		throw std::string("Unrecognized assembly directive!");
 }
+
+
+void IRI::populate_gen_kill() {
+  switch(Type) {
+    case ADDI: case MULTI: case SUBI: case DIVI: case ADDF: case SUBF: case MULTF: case DIVF:
+      if (Operands[0].Type == Operand::REGISTER) gen_set.insert(Operands[0].ToString());
+      if (Operands[1].Type == Operand::REGISTER) gen_set.insert(Operands[1].ToString());
+      if (Operands[2].Type == Operand::REGISTER) kill_set.insert(Operands[2].ToString());
+      break;
+
+    case WRITEI: case WRITEF: case PUSH:
+      if (Operands[0].Type == Operand::REGISTER) gen_set.insert(Operands[0].ToString());
+      break;
+
+    case READI: case READF: case POP:
+      if (Operands[0].Type == Operand::REGISTER) kill_set.insert(Operands[0].ToString());
+      break;
+
+    case STOREI: case STOREF:
+      if (Operands[0].Type == Operand::REGISTER) gen_set.insert(Operands[0].ToString());
+      if (Operands[1].Type == Operand::REGISTER) kill_set.insert(Operands[1].ToString());
+      break;
+
+    case GT: case GE: case LT: case LE: case NE: case EQ:
+      if (Operands[0].Type == Operand::REGISTER) gen_set.insert(Operands[0].ToString());
+      if (Operands[1].Type == Operand::REGISTER) gen_set.insert(Operands[1].ToString());
+      break;
+  }
+}
+
+bool IRI::update_liveness_set() {
+  // First update OUT set
+  live_set.clear();
+  for (auto it = successor_set.begin(); it != successor_set.end(); it++) {
+    live_set.insert((*it)->in_set.begin(), (*it)->in_set.end());
+  }
+
+  // Now figure out the new in_set
+}
+

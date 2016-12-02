@@ -7,6 +7,7 @@
 
 struct Function {
   Function(std::string asdf);
+  ~Function();
   int num_params;
   std::string name;
   std::list<IRI*> iri_list;

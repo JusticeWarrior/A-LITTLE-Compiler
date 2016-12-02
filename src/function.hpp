@@ -25,7 +25,6 @@ struct Function {
   int calc_return_offset();
 
   void register_allocate(std::stringstream* stream, std::unordered_set<std::string> live_set, Operand* ensure1, Operand* ensure2, Operand* allocate);
-
   void print_ir(std::stringstream& ss);
   void print_assembly(std::stringstream& ss);
 

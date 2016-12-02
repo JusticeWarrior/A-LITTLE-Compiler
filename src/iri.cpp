@@ -1,4 +1,5 @@
 #include "iri.hpp"
+#include <set>
 
 IRI::IRI(Types type, Operand op1)
 	:Type(type) {
@@ -230,5 +231,18 @@ bool IRI::update_liveness_set() {
   }
 
   // Now figure out the new in_set
+  std::set<std::string> old_in_set;
+  old_in_set.insert(in_set.begin(), in_set.end());
+  // Remove the kill
+  for (auto it = kill_set.begin(); it != kill_set.end(); it++) {
+    in_set.erase(*it);
+  }
+  // Add the gen
+  for (auto it = gen_set.begin(); it != gen_set.end(); it++) {
+    in_set.insert(*it);
+  }
+  std::set<std::string> new_in_set;
+  new_in_set.insert(in_set.begin(), in_set.end());
+  return new_in_set != old_in_set;
 }
 

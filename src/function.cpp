@@ -183,13 +183,13 @@ std::string Function::variable_name_to_offset(std::string name) {
 
 void Function::write_back_if_dirty(Register* reg, std::stringstream* stream) {
   if (reg->Dirty) {
-    *stream << "move r" << std::to_string(static_cast<long long>(reg->Reg)) << " $" << variable_name_to_offset(reg->Name) << std::endl;
+    *stream << "move r" << std::to_string(static_cast<long long>(reg->Reg)) << " " << variable_name_to_offset(reg->Name) << std::endl;
 	reg->Dirty = 0;
   }
 }
 
 void Function::overwrite_register(Register* reg, std::string op_name, std::stringstream* stream) {
-    *stream << "move $" << variable_name_to_offset(op_name) << " r" << std::to_string(static_cast<long long>(reg->Reg)) << std::endl;
+    *stream << "move " << variable_name_to_offset(op_name) << " r" << std::to_string(static_cast<long long>(reg->Reg)) << std::endl;
 }
 
 void Function::ensure_variable(std::stringstream* stream, std::unordered_set<std::string> live_set, Operand* ensure1, Operand* ensure2) {

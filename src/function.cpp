@@ -99,8 +99,10 @@ void Function::print_ir(std::stringstream& ss) {
 }
 
 void Function::print_assembly(std::stringstream& ss) {
-  for (auto i = iri_list.begin(); i != iri_list.end(); i++)
+  for (auto i = iri_list.begin(); i != iri_list.end(); i++) {
     (**i).PrintAssembly(&ss);
+    ss << ";R0: " << reg1.Name << ", R1: " << reg2.Name << ", R2: " << reg3.Name << ", R3: " << reg4.Name << std::endl << std::endl;
+  }
 }
 
 void Function::generate_cfg() {

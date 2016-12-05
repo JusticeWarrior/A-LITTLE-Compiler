@@ -153,8 +153,11 @@ void Function::calculate_liveness() {
     work_list.erase(work_list.begin());
 
     changed = iri->update_liveness_set();
-    if (changed) work_list.insert(iri->predecessor_set.begin(), iri->predecessor_set.end());
+    if (changed) {
+      work_list.insert(iri->predecessor_set.begin(), iri->predecessor_set.end());
+    }
   }
+
 } //
 
 

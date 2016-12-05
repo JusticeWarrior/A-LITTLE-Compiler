@@ -125,7 +125,7 @@ int main(int argc, char** argv){
     }
     parser.table_factory.print_global_declarations(ss);
     try{
-    parser.print_assembly(ss);
+      //parser.print_assembly(ss);
     }
     catch(std::string str){
       std::cerr << str << std::endl;

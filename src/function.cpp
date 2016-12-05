@@ -178,7 +178,7 @@ std::string Function::variable_name_to_offset(std::string name) {
   //if (name[1] == 'R')
   else
     offset = calc_return_offset();
-  return std::string("$") + std::to_string(offset);
+  return std::to_string(offset);
 }
 
 void Function::write_back_if_dirty(Register* reg, std::stringstream* stream) {

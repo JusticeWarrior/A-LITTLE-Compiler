@@ -58,7 +58,7 @@ void Function::finish(){
   // Add link statement
   iri_list.push_front(IRI::create(
     IRI::LINK, Operand(Operand::LITERAL, std::to_string(
-      static_cast<long long>(get_num_locals())
+      static_cast<long long>(get_num_locals()+get_num_temps())
     ))
   ));
   // Add label

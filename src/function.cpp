@@ -178,15 +178,15 @@ std::string Function::variable_name_to_offset(std::string name) {
   //if (name[1] == 'R')
   else
     offset = calc_return_offset();
-  return std::to_string(offset);
+  return std::string("$") + std::to_string(offset);
 }
 
 void Function::write_back_if_dirty(Register* reg, std::stringstream* stream) {
   if (reg->Dirty) {
     *stream << "move r" << std::to_string(static_cast<long long>(reg->Reg)) << " " << variable_name_to_offset(reg->Name) << std::endl;
 	reg->Dirty = 0;
+    }
   }
-}
 
 void Function::overwrite_register(Register* reg, std::string op_name, std::stringstream* stream) {
     *stream << "move " << variable_name_to_offset(op_name) << " r" << std::to_string(static_cast<long long>(reg->Reg)) << std::endl;

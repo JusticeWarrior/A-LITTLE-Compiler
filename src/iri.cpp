@@ -120,10 +120,10 @@ void IRI::PrintIRI(std::stringstream* stream) {
 void IRI::PrintAssembly(std::stringstream* stream) {
 	Operand::Operand dummy;
 	if (Type == STOREI) {
-		if (Operands[1].Type == Operands::REGISTER) {
-			_function->register_allocate(stream, live_set, &Operands[0], &dummy, &Operands[1]);
+		if (Operands[1].Type == Operand::REGISTER) {
+			_Function->register_allocate(stream, live_set, &Operands[0], &dummy, &Operands[1]);
 		} else {
-			_function->register_allocate(stream, live_set, &Operands[0], &dummy, &dummy);
+			_Function->register_allocate(stream, live_set, &Operands[0], &dummy, &dummy);
 		}
 		*stream << "move " << Operands[0].ToAssemblyString() << " " << Operands[1].ToAssemblyString() << std::endl;
 	}
@@ -160,19 +160,15 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 		*stream << "divi " << Operands[0].ToAssemblyString() << " " << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == STOREF){
-		if (Operands[1].Type == Operands::REGISTER) {
-			_function->register_allocate(stream, live_set, &Operands[0], &dummy, &Operands[1]);
+		if (Operands[1].Type == Operand::REGISTER) {
+			_Function->register_allocate(stream, live_set, &Operands[0], &dummy, &Operands[1]);
 		} else {
-			_function->register_allocate(stream, live_set, &Operands[0], &dummy, &dummy);
+			_Function->register_allocate(stream, live_set, &Operands[0], &dummy, &dummy);
 		}
 		*stream << "move " << Operands[0].ToAssemblyString() << " " << Operands[1].ToAssemblyString() << std::endl;
 	}
 	else if (Type == WRITEF){
-		if (Operands[1].type == Operands::REGISTER) {
-			_function->register_allocate(stream, live_set, &Operands[0], &dummy, &Operands[1]);
-		} else {
-			_function->register_allocate(stream, live_set, &Operands[0], &dummy, &dummy);
-		}
+		_Function->register_allocate(stream, live_set, &Operands[0], &dummy, &dummy);
 		*stream << "sys writer " << Operands[0].ToAssemblyString() << std::endl;
 	}
 	else if (Type == ADDF) {

@@ -34,6 +34,7 @@ struct Function {
   void calculate_liveness();
   
   std::string variable_name_to_offset(std::string name);
+  void write_back_if_dirty(Register* reg, std::stringstream* stream);
 
   Register reg1;
   Register reg2;
@@ -44,7 +45,6 @@ struct Function {
     int next_temp;
     int next_local;
 
-    void write_back_if_dirty(Register* reg, std::stringstream* stream);
     void overwrite_register(Register* reg, std::string op_name, std::stringstream* stream);
     void ensure_variable(std::stringstream* stream, std::unordered_set<std::string> live_set, Operand* ensure1, Operand* ensure2);
 };

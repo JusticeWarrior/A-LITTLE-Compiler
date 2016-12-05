@@ -323,25 +323,25 @@ void Function::register_allocate(std::stringstream* stream, std::unordered_set<s
   }
   else if (allocate->Type != Operand::NOTHING) {
 	// Find the first unused register
-	  if (live_set.find(reg1.Name) == live_set.end() && (ensure1->Type != Operand::NOTHING || ensure1->ToString() != reg1.Name) && (ensure2->Type != Operand::NOTHING || ensure2->ToString() != reg1.Name)) {
+	  if (live_set.find(reg1.Name) == live_set.end() && (ensure1->Type == Operand::NOTHING || ensure1->ToString() != reg1.Name) && (ensure2->Type == Operand::NOTHING || ensure2->ToString() != reg1.Name)) {
 	    reg1.Name = allocate->ToString();
 	    allocate->Reg = 0;
 	    allocate->Type = Operand::REGISTER;
 	    reg1.Dirty = 1;
 	  }
-	  else if (live_set.find(reg2.Name) == live_set.end() && (ensure1->Type != Operand::NOTHING || ensure1->ToString() != reg2.Name) && (ensure2->Type != Operand::NOTHING || ensure2->ToString() != reg2.Name)) {
+	  else if (live_set.find(reg2.Name) == live_set.end() && (ensure1->Type == Operand::NOTHING || ensure1->ToString() != reg2.Name) && (ensure2->Type == Operand::NOTHING || ensure2->ToString() != reg2.Name)) {
 	    reg2.Name = allocate->ToString();
 	    allocate->Reg = 1;
 	    allocate->Type = Operand::REGISTER;
 	    reg2.Dirty = 1;
 	  }
-	  else if (live_set.find(reg3.Name) == live_set.end() && (ensure1->Type != Operand::NOTHING || ensure1->ToString() != reg3.Name) && (ensure2->Type != Operand::NOTHING || ensure2->ToString() != reg3.Name)) {
+	  else if (live_set.find(reg3.Name) == live_set.end() && (ensure1->Type == Operand::NOTHING || ensure1->ToString() != reg3.Name) && (ensure2->Type == Operand::NOTHING || ensure2->ToString() != reg3.Name)) {
 	    reg3.Name = allocate->ToString();
 	    allocate->Reg = 2;
 	    allocate->Type = Operand::REGISTER;
 	    reg3.Dirty = 1;
 	  }
-	  else if (live_set.find(reg4.Name) == live_set.end() && (ensure1->Type != Operand::NOTHING || ensure1->ToString() != reg4.Name) && (ensure2->Type != Operand::NOTHING || ensure2->ToString() != reg4.Name)) {
+	  else if (live_set.find(reg4.Name) == live_set.end() && (ensure1->Type == Operand::NOTHING || ensure1->ToString() != reg4.Name) && (ensure2->Type == Operand::NOTHING || ensure2->ToString() != reg4.Name)) {
 	    reg4.Name = allocate->ToString();
 	    allocate->Reg = 3;
 	    allocate->Type = Operand::REGISTER;

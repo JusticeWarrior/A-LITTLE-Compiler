@@ -122,10 +122,11 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 	PrintIRI(stream);
 	Operand::Operand dummy;
 	if (Type == STOREI) {
-		if (Operands[1].Type == Operand::REGISTER) {
+		if (Operands[0].Type == Operand::LITERAL) {
+			_Function->register_allocate(stream, live_set, &dummy, &dummy, &Operands[1]);
+		} 
+		else {
 			_Function->register_allocate(stream, live_set, &Operands[0], &dummy, &Operands[1]);
-		} else {
-			_Function->register_allocate(stream, live_set, &Operands[0], &dummy, &dummy);
 		}
 		*stream << "move " << Operands[0].ToAssemblyString() << " " << Operands[1].ToAssemblyString() << std::endl;
 	}
@@ -162,10 +163,11 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 		*stream << "divi " << Operands[0].ToAssemblyString() << " " << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == STOREF){
-		if (Operands[1].Type == Operand::REGISTER) {
+		if (Operands[0].Type == Operand::LITERAL) {
+			_Function->register_allocate(stream, live_set, &dummy, &dummy, &Operands[1]);
+		} 
+		else {
 			_Function->register_allocate(stream, live_set, &Operands[0], &dummy, &Operands[1]);
-		} else {
-			_Function->register_allocate(stream, live_set, &Operands[0], &dummy, &dummy);
 		}
 		*stream << "move " << Operands[0].ToAssemblyString() << " " << Operands[1].ToAssemblyString() << std::endl;
 	}
@@ -266,11 +268,25 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 	else
 		throw std::string("Unrecognized assembly directive!");
 
+	if (dump) {
+	  _Function->write_back_if_dirty(&_Function->reg1, stream);
+	  _Function->reg1.Name = "";
+	  _Function->write_back_if_dirty(&_Function->reg2, stream);
+	  _Function->reg2.Name = "";
+	  _Function->write_back_if_dirty(&_Function->reg3, stream);
+	  _Function->reg3.Name = "";
+	  _Function->write_back_if_dirty(&_Function->reg4, stream);
+	  _Function->reg4.Name = "";
+	}
+
 	*stream << ";{";
 	for (auto it = live_set.begin(); it != live_set.end(); it++) {
 	  *stream << *it << ", ";
 	}
-	*stream << "}" << std::endl;
+	*stream << "} ";
+	if (dump) *stream << "DUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUMP";
+	*stream << std::endl;
+
 }
 
 

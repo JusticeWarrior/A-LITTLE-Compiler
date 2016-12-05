@@ -339,6 +339,7 @@ __pycache__/
 
 # Ignore genrated files
 micro
+Micro
 generated/*
 *.swp
 

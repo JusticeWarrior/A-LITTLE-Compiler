@@ -245,8 +245,12 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 		*stream << "push " << Operands[0].ToAssemblyString() << std::endl;
 	}
 	else if (Type == POP) {
-		_Function->register_allocate(stream, live_set, &dummy, &dummy, &Operands[0]);
-		*stream << "pop " << Operands[0].ToAssemblyString() << std::endl;
+		if (Operands[0].Type == Operand::LABEL) {
+			*stream << "pop" << std::endl;	
+		} else {
+			_Function->register_allocate(stream, live_set, &dummy, &dummy, &Operands[0]);
+			*stream << "pop " << Operands[0].ToAssemblyString() << std::endl;
+		}
 	}
 	else if (Type == RET) {
 		*stream << "unlnk" << std::endl;

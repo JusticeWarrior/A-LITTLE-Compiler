@@ -147,7 +147,7 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 	else if (Type == MULTI) {
 		_Function->register_allocate(stream, live_set, &Operands[0], &Operands[1], &Operands[2]);
 		*stream << "move " << Operands[1].ToAssemblyString() << " " << Operands[2].ToAssemblyString()  << std::endl;
-		*stream << "multi " << Operands[0].ToAssemblyString() << " " << Operands[2].ToAssemblyString() << std::endl;
+		*stream << "muli " << Operands[0].ToAssemblyString() << " " << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == SUBI) {
 		_Function->register_allocate(stream, live_set, &Operands[0], &Operands[1], &Operands[2]);

@@ -1,4 +1,5 @@
 #include "operand.hpp"
+#include <iostream>
 
 Operand::Operand() {
 	Type = NOTHING;

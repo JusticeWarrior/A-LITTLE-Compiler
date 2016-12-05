@@ -4,6 +4,18 @@
 #include <map>
 #include <set>
 
+std::string make_str(const char* str) {
+  return std::string(str);
+}
+
+bool found(const char* str, std::unordered_set<std::string>* set) {
+  return set->find(str) != set->end();
+}
+
+bool found(std::string str, std::unordered_set<std::string>* set) {
+  return set->find(str) != set->end();
+}
+
 Function::Function(std::string name) :
   next_temp(1),
   next_local(1),
@@ -117,7 +129,7 @@ void Function::generate_cfg() {
       label_dict[(*it)->Operands[0].ToString()] = *it;
   }
 
-  // Step 2, connect all of the predecessors and successors
+  // Step 2, connect all of the predecessors and successors involving jumps.
   for (auto it = iri_list.begin(); it != iri_list.end(); it++) {
     IRI* iri = *it;
     if (std::next(it) != iri_list.end() && (*it)->Type != IRI::JUMP) {
@@ -141,6 +153,12 @@ void Function::generate_cfg() {
     }
       
   }
+  // Step 3 mark DUMP
+  for (auto it = iri_list.begin(); it != iri_list.end(); it++) {
+    if ((*it)->successor_set.size() > 1)
+      (*it)->dump=true;
+  }
+
 }
 
 void Function::calculate_liveness() {
@@ -168,11 +186,12 @@ void Function::calculate_liveness() {
 
 
 std::string Function::variable_name_to_offset(std::string name) {
+  std::string name_copy = name;
   long long offset;
   long long reg_num;
   if (name[0] != '$')
     return name;
-  reg_num = std::stoi(name.erase(0,2));
+  reg_num = std::stoi(name_copy.erase(0,2));
   if (name[1] == 'L')
     offset = calc_local_offset(reg_num);
   if (name[1] == 'P')
@@ -217,28 +236,28 @@ void Function::ensure_variable(std::stringstream* stream, std::unordered_set<std
 	}
 	// Find the first unused register
 	else {
-	  if (live_set.find(reg1.Name) == live_set.end() && (ensure2->Type != Operand::NOTHING || ensure2->ToString() != reg1.Name)) {
+	  if (live_set.find(reg1.Name) == live_set.end() && (ensure2->Type == Operand::NOTHING || ensure2->ToString() != reg1.Name)) {
 	    overwrite_register(&reg1, ensure1->ToString(), stream);
 	    reg1.Name = ensure1->ToString();
 	    ensure1->Reg = 0;
 	    ensure1->Type = Operand::REGISTER;
 	    reg1.Dirty = 0;
 	  }
-	  else if (live_set.find(reg2.Name) == live_set.end() && (ensure2->Type != Operand::NOTHING || ensure2->ToString() != reg2.Name)) {
+	  else if (live_set.find(reg2.Name) == live_set.end() && (ensure2->Type == Operand::NOTHING || ensure2->ToString() != reg2.Name)) {
 	    overwrite_register(&reg2, ensure1->ToString(), stream);
 	    reg2.Name = ensure1->ToString();
 	    ensure1->Reg = 1;
 	    ensure1->Type = Operand::REGISTER;
 	    reg2.Dirty = 0;
 	  }
-	  else if (live_set.find(reg3.Name) == live_set.end() && (ensure2->Type != Operand::NOTHING || ensure2->ToString() != reg3.Name)) {
+	  else if (live_set.find(reg3.Name) == live_set.end() && (ensure2->Type == Operand::NOTHING || ensure2->ToString() != reg3.Name)) {
 	    overwrite_register(&reg3, ensure1->ToString(), stream);
 	    reg3.Name = ensure1->ToString();
 	    ensure1->Reg = 2;
 	    ensure1->Type = Operand::REGISTER;
 	    reg3.Dirty = 0;
 	  }
-	  else if (live_set.find(reg4.Name) == live_set.end() && (ensure2->Type != Operand::NOTHING || ensure2->ToString() != reg4.Name)) {
+	  else if (live_set.find(reg4.Name) == live_set.end() && (ensure2->Type == Operand::NOTHING || ensure2->ToString() != reg4.Name)) {
 	    overwrite_register(&reg4, ensure1->ToString(), stream);
 	    reg4.Name = ensure1->ToString();
 	    ensure1->Reg = 3;

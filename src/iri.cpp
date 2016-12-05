@@ -3,16 +3,16 @@
 #include <set>
 
 IRI::IRI(Types type, Operand op1)
-	:Type(type) {
+	:Type(type), dump(false) {
 		Operands.push_back(op1);
 	}
 IRI::IRI(Types type, Operand op1, Operand op2)
-	:Type(type) {
+	:Type(type), dump(false) {
 		Operands.push_back(op1);
 		Operands.push_back(op2);
 	}
 IRI::IRI(Types type, Operand op1, Operand op2, Operand op3)
-	:Type(type) {
+	:Type(type), dump(false) {
 		Operands.push_back(op1);
 		Operands.push_back(op2);
 		Operands.push_back(op3);
@@ -108,16 +108,18 @@ void IRI::PrintIRI(std::stringstream* stream) {
 	*stream << "}" << std::endl;
 	*/
 
-
+/*
 	*stream << ";{";
 	for (auto it = live_set.begin(); it != live_set.end(); it++) {
 	  *stream << *it << ", ";
 	}
 	*stream << "}" << std::endl << std::endl;
+	*/
 	
 }
 
 void IRI::PrintAssembly(std::stringstream* stream) {
+	PrintIRI(stream);
 	Operand::Operand dummy;
 	if (Type == STOREI) {
 		if (Operands[1].Type == Operand::REGISTER) {

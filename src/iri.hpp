@@ -48,6 +48,7 @@ class IRI{
 
 		std::unordered_set<IRI*> predecessor_set;
 		std::unordered_set<IRI*> successor_set;
+		bool dump;
 
 		void populate_gen_kill();
 

@@ -87,7 +87,8 @@ void IRI::PrintIRI(std::stringstream* stream) {
 	else
 		throw std::string("Unrecognized IRI");
 	// Print the liveness set as well
-	
+
+	/*
 	*stream << this << " PRED: ";
 	for (auto it = predecessor_set.begin(); it != predecessor_set.end(); it++) {
 	  *stream << (*it) << ", ";
@@ -97,6 +98,7 @@ void IRI::PrintIRI(std::stringstream* stream) {
 	  *stream << (*it) <<", ";
 	}
 	*stream << std::endl;
+	*/
   
 /*	
 	*stream << ";{";

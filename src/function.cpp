@@ -173,7 +173,8 @@ std::string Function::variable_name_to_offset(std::string name) {
     offset = calc_param_offset(reg_num);
   if (name[1] == 'T')
     offset = calc_temp_offset(reg_num);
-  if (name[1] == 'R')
+  //if (name[1] == 'R')
+  else
     offset = calc_return_offset();
   return std::string("$") + std::to_string(offset);
 }

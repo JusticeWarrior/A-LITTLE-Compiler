@@ -251,6 +251,12 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 		*stream << "sys writes " << Operands[0].ToAssemblyString() << std::endl;
 	else
 		throw std::string("Unrecognized assembly directive!");
+
+	*stream << ";{";
+	for (auto it = live_set.begin(); it != live_set.end(); it++) {
+	  *stream << *it << ", ";
+	}
+	*stream << "}" << std::endl;
 }
 
 

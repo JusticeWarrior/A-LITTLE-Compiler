@@ -100,27 +100,48 @@ void IRI::PrintIRI(std::stringstream* stream) {
 	*stream << std::endl;
 	*/
   
-/*	
+	
 	*stream << ";{";
 	for (auto it = in_set.begin(); it != in_set.end(); it++) {
 	  *stream << *it << ", ";
 	}
 	*stream << "}" << std::endl;
-	*/
+	
 
-/*
+
 	*stream << ";{";
 	for (auto it = live_set.begin(); it != live_set.end(); it++) {
 	  *stream << *it << ", ";
 	}
 	*stream << "}" << std::endl << std::endl;
-	*/
+	
 	
 }
 
 void IRI::PrintAssembly(std::stringstream* stream) {
 	PrintIRI(stream);
 	Operand::Operand dummy;
+	bool after_dump;
+	if (successor_set.size()==1 && (*successor_set.begin())->predecessor_set.size() > 1) {
+	  after_dump = true;
+	}
+	if (predecessor_set.size()>1){
+
+	  _Function->reg1.Name = "";
+	  _Function->reg1.Dirty=0;
+	  _Function->reg2.Name = "";
+	  _Function->reg2.Dirty=0;
+	  _Function->reg3.Name = "";
+	  _Function->reg3.Dirty=0;
+	  _Function->reg4.Name = "";
+	  _Function->reg4.Dirty=0;
+	}
+	if (dump) {
+	  _Function->write_back_if_dirty(&_Function->reg1, stream);
+	  _Function->write_back_if_dirty(&_Function->reg2, stream);
+	  _Function->write_back_if_dirty(&_Function->reg3, stream);
+	  _Function->write_back_if_dirty(&_Function->reg4, stream);
+	}
 	if (Type == STOREI) {
 		if (Operands[0].Type == Operand::LITERAL) {
 			_Function->register_allocate(stream, live_set, &dummy, &dummy, &Operands[1]);
@@ -284,17 +305,13 @@ void IRI::PrintAssembly(std::stringstream* stream) {
     ", R3: " << _Function->reg4.Name << " [D:" << _Function->reg4.Dirty << "]" << std::endl;
 	if (dump) *stream << ";DUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUMP " << std::endl;
 	//
-
-	if (dump) {
+	if (after_dump) {
 	  _Function->write_back_if_dirty(&_Function->reg1, stream);
-	  _Function->reg1.Name = "";
 	  _Function->write_back_if_dirty(&_Function->reg2, stream);
-	  _Function->reg2.Name = "";
 	  _Function->write_back_if_dirty(&_Function->reg3, stream);
-	  _Function->reg3.Name = "";
 	  _Function->write_back_if_dirty(&_Function->reg4, stream);
-	  _Function->reg4.Name = "";
 	}
+
 
 	*stream << ";{";
 	for (auto it = live_set.begin(); it != live_set.end(); it++) {
@@ -309,27 +326,27 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 void IRI::populate_gen_kill() {
   switch(Type) {
     case ADDI: case MULTI: case SUBI: case DIVI: case ADDF: case SUBF: case MULTF: case DIVF:
-      if (Operands[0].Type == Operand::REGISTER) gen_set.insert(Operands[0].ToString());
-      if (Operands[1].Type == Operand::REGISTER) gen_set.insert(Operands[1].ToString());
-      if (Operands[2].Type == Operand::REGISTER) kill_set.insert(Operands[2].ToString());
+      if (Operands[0].Type != Operand::LITERAL) gen_set.insert(Operands[0].ToString());
+      if (Operands[1].Type != Operand::LITERAL) gen_set.insert(Operands[1].ToString());
+      if (Operands[2].Type != Operand::LITERAL) kill_set.insert(Operands[2].ToString());
       break;
 
     case WRITEI: case WRITEF: case PUSH:
-      if (Operands[0].Type == Operand::REGISTER) gen_set.insert(Operands[0].ToString());
+      if (Operands[0].Type != Operand::LITERAL) gen_set.insert(Operands[0].ToString());
       break;
 
     case READI: case READF: case POP:
-      if (Operands[0].Type == Operand::REGISTER) kill_set.insert(Operands[0].ToString());
+      if (Operands[0].Type != Operand::LITERAL) kill_set.insert(Operands[0].ToString());
       break;
 
     case STOREI: case STOREF:
-      if (Operands[0].Type == Operand::REGISTER) gen_set.insert(Operands[0].ToString());
-      if (Operands[1].Type == Operand::REGISTER) kill_set.insert(Operands[1].ToString());
+      if (Operands[0].Type != Operand::LITERAL) gen_set.insert(Operands[0].ToString());
+      if (Operands[1].Type != Operand::LITERAL) kill_set.insert(Operands[1].ToString());
       break;
 
     case GT: case GE: case LT: case LE: case NE: case EQ:
-      if (Operands[0].Type == Operand::REGISTER) gen_set.insert(Operands[0].ToString());
-      if (Operands[1].Type == Operand::REGISTER) gen_set.insert(Operands[1].ToString());
+      if (Operands[0].Type != Operand::LITERAL) gen_set.insert(Operands[0].ToString());
+      if (Operands[1].Type != Operand::LITERAL) gen_set.insert(Operands[1].ToString());
       break;
   }
 }

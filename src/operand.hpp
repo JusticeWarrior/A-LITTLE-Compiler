@@ -5,7 +5,7 @@
 
 class Operand{
 	public:
-		enum Types { REGISTER, LITERAL, LABEL, VARIABLE, LOCAL, PARAMETER, RETURN, NOTHING};
+		enum Types { REGISTER, LITERAL, LABEL, VARIABLE, LOCAL, PARAMETER, RETURN, NOTHING, MAGIC_TYPE};
 		enum DataTypes {FLOAT, INT};
 		Operand();
 		Operand(Types type, std::string value);
@@ -13,6 +13,7 @@ class Operand{
 		std::string ToString();
 		std::string ToAssemblyString();
 		Types Type;
+		Types AwfulType;
 		DataTypes DataType;
 		std::string Value;
 		int Reg;    // IRI code

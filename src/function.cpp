@@ -22,7 +22,7 @@ Function::Function(std::string name) :
   name(name),
   num_params(0),
   reg1(0),
-  reg2(2),
+  reg2(1),
   reg3(2),
   reg4(3)
 {}

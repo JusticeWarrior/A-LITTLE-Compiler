@@ -267,6 +267,13 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 		*stream << "sys writes " << Operands[0].ToAssemblyString() << std::endl;
 	else
 		throw std::string("Unrecognized assembly directive!");
+	// register state
+    *stream << ";R0: " << _Function->reg1.Name << " [D:" << _Function->reg1.Dirty << "]" <<
+    ", R1: " << _Function->reg2.Name << " [D:" << _Function->reg2.Dirty << "]" <<
+    ", R2: " << _Function->reg3.Name << " [D:" << _Function->reg3.Dirty << "]" <<
+    ", R3: " << _Function->reg4.Name << " [D:" << _Function->reg4.Dirty << "]" << std::endl;
+	if (dump) *stream << ";DUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUMP " << std::endl;
+	//
 
 	if (dump) {
 	  _Function->write_back_if_dirty(&_Function->reg1, stream);
@@ -284,7 +291,6 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 	  *stream << *it << ", ";
 	}
 	*stream << "} ";
-	if (dump) *stream << "DUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUMP";
 	*stream << std::endl;
 
 }

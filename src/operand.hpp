@@ -17,6 +17,7 @@ class Operand{
 		std::string Value;
 		int Reg;    // IRI code
 		int Offset; // assembly code for LOCAL and PARAMETER types
+		int Awful;
 		
 };
 

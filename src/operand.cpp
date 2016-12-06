@@ -1,22 +1,27 @@
 #include "operand.hpp"
 #include <iostream>
 
+#define MAGIC -12321
+
 Operand::Operand() {
 	Type = NOTHING;
+	Awful = MAGIC;
 }
 Operand::Operand(Types type, std::string value)
-	:Type(type), Value(value) { }
+	:Type(type), Value(value), Awful(MAGIC) { }
 Operand::Operand(Types type, int reg)
-	:Type(type), Reg(reg) { }
+	:Type(type), Reg(reg), Awful(MAGIC) { }
 std::string Operand::ToString() {
+	if (Awful == MAGIC)
+	  Awful = Reg;
 	if (Type == NOTHING)
 		return "";
 	else if (Type == REGISTER)
-		return "$T" + std::to_string(static_cast<long long>(Reg));
+		return "$T" + std::to_string(static_cast<long long>(Awful));
 	else if (Type == LOCAL)
-		return "$L" + std::to_string(static_cast<long long>(Reg));
+		return "$L" + std::to_string(static_cast<long long>(Awful));
 	else if (Type == PARAMETER)
-		return "$P" + std::to_string(static_cast<long long>(Reg));
+		return "$P" + std::to_string(static_cast<long long>(Awful));
 	else if (Type == RETURN)
 		return "$R";
 	else

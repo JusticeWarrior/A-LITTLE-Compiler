@@ -114,11 +114,13 @@ void Function::print_ir(std::stringstream& ss) {
 void Function::print_assembly(std::stringstream& ss) {
   for (auto i = iri_list.begin(); i != iri_list.end(); i++) {
     (**i).PrintAssembly(&ss);
+    /*
     ss << ";R0: " << reg1.Name << " [D:" << reg1.Dirty << "]" <<
     ", R1: " << reg2.Name << " [D:" << reg2.Dirty << "]" <<
     ", R2: " << reg3.Name << " [D:" << reg3.Dirty << "]" <<
     ", R3: " << reg4.Name << " [D:" << reg4.Dirty << "]" <<
-    std::endl << std::endl;
+    */
+    //std::endl << std::endl;
   }
 }
 

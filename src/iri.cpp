@@ -119,22 +119,11 @@ void IRI::PrintIRI(std::stringstream* stream) {
 }
 
 void IRI::PrintAssembly(std::stringstream* stream) {
-	PrintIRI(stream);
+	//PrintIRI(stream);
 	Operand::Operand dummy;
 	bool after_dump;
 	if (successor_set.size()==1 && (*successor_set.begin())->predecessor_set.size() > 1) {
 	  after_dump = true;
-	}
-	if (predecessor_set.size()>1){
-
-	  _Function->reg1.Name = "";
-	  _Function->reg1.Dirty=0;
-	  _Function->reg2.Name = "";
-	  _Function->reg2.Dirty=0;
-	  _Function->reg3.Name = "";
-	  _Function->reg3.Dirty=0;
-	  _Function->reg4.Name = "";
-	  _Function->reg4.Dirty=0;
 	}
 	if (dump) {
 	  _Function->write_back_if_dirty(&_Function->reg1, stream);
@@ -247,6 +236,14 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 		*stream << "jeq " << Operands[2].ToAssemblyString() << std::endl;
 	}
 	else if (Type == LABEL) {
+	  _Function->reg1.Name = "";
+	  _Function->reg1.Dirty=0;
+	  _Function->reg2.Name = "";
+	  _Function->reg2.Dirty=0;
+	  _Function->reg3.Name = "";
+	  _Function->reg3.Dirty=0;
+	  _Function->reg4.Name = "";
+	  _Function->reg4.Dirty=0;
 		*stream << "label " << Operands[0].ToAssemblyString() << std::endl;
 	}
 	else if (Type == JUMP) {
@@ -299,12 +296,13 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 	else
 		throw std::string("Unrecognized assembly directive!");
 	// register state
+	/*
     *stream << ";R0: " << _Function->reg1.Name << " [D:" << _Function->reg1.Dirty << "]" <<
     ", R1: " << _Function->reg2.Name << " [D:" << _Function->reg2.Dirty << "]" <<
     ", R2: " << _Function->reg3.Name << " [D:" << _Function->reg3.Dirty << "]" <<
     ", R3: " << _Function->reg4.Name << " [D:" << _Function->reg4.Dirty << "]" << std::endl;
 	if (dump) *stream << ";DUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUMP " << std::endl;
-	//
+	*/
 	if (after_dump) {
 	  _Function->write_back_if_dirty(&_Function->reg1, stream);
 	  _Function->write_back_if_dirty(&_Function->reg2, stream);
@@ -312,13 +310,14 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 	  _Function->write_back_if_dirty(&_Function->reg4, stream);
 	}
 
-
+/*
 	*stream << ";{";
 	for (auto it = live_set.begin(); it != live_set.end(); it++) {
 	  *stream << *it << ", ";
 	}
 	*stream << "} ";
 	*stream << std::endl;
+	*/
 
 }
 

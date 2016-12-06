@@ -125,11 +125,15 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 	if (successor_set.size()==1 && (*successor_set.begin())->predecessor_set.size() > 1) {
 	  after_dump = true;
 	}
-	if (dump) {
+	if (dump || after_dump) {
 	  _Function->write_back_if_dirty(&_Function->reg1, stream);
+	  _Function->reg1.Name = "";
 	  _Function->write_back_if_dirty(&_Function->reg2, stream);
+	  _Function->reg2.Name = "";
 	  _Function->write_back_if_dirty(&_Function->reg3, stream);
+	  _Function->reg3.Name = "";
 	  _Function->write_back_if_dirty(&_Function->reg4, stream);
+	  _Function->reg4.Name = "";
 	}
 	if (Type == STOREI) {
 		if (Operands[0].Type == Operand::LITERAL) {

@@ -257,7 +257,7 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 		}
 	}
 	else if (Type == RET) {
-	  /*
+	  
 	  _Function->write_back_if_dirty(&_Function->reg1, stream);
 	  _Function->reg1.Name = "";
 	  _Function->write_back_if_dirty(&_Function->reg2, stream);
@@ -266,7 +266,7 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 	  _Function->reg3.Name = "";
 	  _Function->write_back_if_dirty(&_Function->reg4, stream);
 	  _Function->reg4.Name = "";
-	  */
+	  
 		*stream << "unlnk" << std::endl;
 		*stream << "ret" << std::endl;
 	}

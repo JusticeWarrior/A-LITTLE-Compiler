@@ -3,6 +3,7 @@
 #include <iostream>
 #include <map>
 #include <set>
+#include <stdexcept>
 
 std::string make_str(const char* str) {
   return std::string(str);
@@ -191,13 +192,18 @@ std::string Function::variable_name_to_offset(std::string name) {
   long long reg_num;
   if (name[0] != '$')
     return name;
-  reg_num = std::stoi(name_copy.erase(0,2));
-  if (name[1] == 'L')
+  if (name[1] == 'L') {
+    reg_num = std::stoi(name_copy.erase(0,2));
     offset = calc_local_offset(reg_num);
-  if (name[1] == 'P')
+  }
+  else if (name[1] == 'P') {
+    reg_num = std::stoi(name_copy.erase(0,2));
     offset = calc_param_offset(reg_num);
-  if (name[1] == 'T')
+  }
+  else if (name[1] == 'T') {
+    reg_num = std::stoi(name_copy.erase(0,2));
     offset = calc_temp_offset(reg_num);
+  }
   //if (name[1] == 'R')
   else
     offset = calc_return_offset();

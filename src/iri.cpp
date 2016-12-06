@@ -119,9 +119,9 @@ void IRI::PrintIRI(std::stringstream* stream) {
 }
 
 void IRI::PrintAssembly(std::stringstream* stream) {
-	//PrintIRI(stream);
+	PrintIRI(stream);
 	Operand::Operand dummy;
-	bool after_dump;
+	bool after_dump = 0;
 	if (successor_set.size()==1 && (*successor_set.begin())->predecessor_set.size() > 1) {
 	  after_dump = true;
 	}
@@ -134,8 +134,12 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 	  _Function->reg3.Name = "";
 	  _Function->write_back_if_dirty(&_Function->reg4, stream);
 	  _Function->reg4.Name = "";
+	  if (after_dump) *stream << ";AFTER_DUMPPPPPPPPPPPP!!! " << std::endl;
 	}
 	if (Type == STOREI) {
+		if (Operands[0].ToString() == "2" && Operands[1].ToString() == "$T2") {
+			int i = 0;
+		}
 		if (Operands[0].Type == Operand::LITERAL) {
 			_Function->register_allocate(stream, live_set, &dummy, &dummy, &Operands[1]);
 		} 
@@ -267,8 +271,12 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 		}
 	}
 	else if (Type == PUSH) {
-		_Function->register_allocate(stream, live_set, &Operands[0], &dummy, &dummy);
-		*stream << "push " << Operands[0].ToAssemblyString() << std::endl;
+		if (Operands[0].Type == Operand::LABEL) {
+			*stream << "push r0" << std::endl;
+		} else {
+			_Function->register_allocate(stream, live_set, &Operands[0], &dummy, &dummy);
+			*stream << "push " << Operands[0].ToAssemblyString() << std::endl;
+		}
 	}
 	else if (Type == POP) {
 		if (Operands[0].Type == Operand::LABEL) {
@@ -300,13 +308,13 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 	else
 		throw std::string("Unrecognized assembly directive!");
 	// register state
-	/*
+	
     *stream << ";R0: " << _Function->reg1.Name << " [D:" << _Function->reg1.Dirty << "]" <<
     ", R1: " << _Function->reg2.Name << " [D:" << _Function->reg2.Dirty << "]" <<
     ", R2: " << _Function->reg3.Name << " [D:" << _Function->reg3.Dirty << "]" <<
     ", R3: " << _Function->reg4.Name << " [D:" << _Function->reg4.Dirty << "]" << std::endl;
 	if (dump) *stream << ";DUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUMP " << std::endl;
-	*/
+	
 	if (after_dump) {
 	  _Function->write_back_if_dirty(&_Function->reg1, stream);
 	  _Function->write_back_if_dirty(&_Function->reg2, stream);
@@ -314,14 +322,14 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 	  _Function->write_back_if_dirty(&_Function->reg4, stream);
 	}
 
-/*
+
 	*stream << ";{";
 	for (auto it = live_set.begin(); it != live_set.end(); it++) {
 	  *stream << *it << ", ";
 	}
 	*stream << "} ";
 	*stream << std::endl;
-	*/
+	
 
 }
 
@@ -360,6 +368,7 @@ bool IRI::update_liveness_set() {
   for (auto it = successor_set.begin(); it != successor_set.end(); it++) {
     live_set.insert((*it)->in_set.begin(), (*it)->in_set.end());
   }
+  live_set.erase("");
 
   // Now figure out the new in_set
   std::set<std::string> old_in_set;
@@ -377,6 +386,8 @@ bool IRI::update_liveness_set() {
   for (auto it = gen_set.begin(); it != gen_set.end(); it++) {
     in_set.insert(*it);
   }
+  // Stop any nonsense
+  in_set.erase("");
   std::set<std::string> new_in_set;
   new_in_set.insert(in_set.begin(), in_set.end());
   return new_in_set != old_in_set;

@@ -121,11 +121,14 @@ void IRI::PrintIRI(std::stringstream* stream) {
 void IRI::PrintAssembly(std::stringstream* stream) {
 	//PrintIRI(stream);
 	Operand::Operand dummy;
-	bool after_dump;
-	if (successor_set.size()==1 && (*successor_set.begin())->predecessor_set.size() > 1) {
-	  after_dump = true;
-	}
-	if (dump || after_dump) {
+	switch(Type) {
+	  case GT:
+	  case LT:
+	  case GE:
+	  case LE:
+	  case EQ:
+	  case NE:
+	  case JUMP:
 	  _Function->write_back_if_dirty(&_Function->reg1, stream);
 	  _Function->reg1.Name = "";
 	  _Function->write_back_if_dirty(&_Function->reg2, stream);
@@ -307,12 +310,6 @@ void IRI::PrintAssembly(std::stringstream* stream) {
     ", R3: " << _Function->reg4.Name << " [D:" << _Function->reg4.Dirty << "]" << std::endl;
 	if (dump) *stream << ";DUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUMP " << std::endl;
 	*/
-	if (after_dump) {
-	  _Function->write_back_if_dirty(&_Function->reg1, stream);
-	  _Function->write_back_if_dirty(&_Function->reg2, stream);
-	  _Function->write_back_if_dirty(&_Function->reg3, stream);
-	  _Function->write_back_if_dirty(&_Function->reg4, stream);
-	}
 
 /*
 	*stream << ";{";

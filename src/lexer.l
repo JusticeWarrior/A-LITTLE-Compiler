@@ -123,11 +123,17 @@ int main(int argc, char** argv){
     catch(std::string a){
       std::cerr << a << std::endl;
     }
+    catch(const char* a){
+      std::cerr << a << std::endl;
+    }
     parser.table_factory.print_global_declarations(ss);
     try{
       parser.print_assembly(ss);
     }
     catch(std::string str){
+      std::cerr << str << std::endl;
+    }
+    catch(const char* str){
       std::cerr << str << std::endl;
     }
     std::cout << ss.rdbuf() << std::endl;

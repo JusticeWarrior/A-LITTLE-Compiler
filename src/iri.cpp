@@ -120,6 +120,7 @@ void IRI::PrintIRI(std::stringstream* stream) {
 
 void IRI::PrintAssembly(std::stringstream* stream) {
 	//PrintIRI(stream);
+	bool after_dump = false;
 	Operand::Operand dummy;
 	switch(Type) {
 	  case GT:
@@ -137,6 +138,12 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 	  _Function->reg3.Name = "";
 	  _Function->write_back_if_dirty(&_Function->reg4, stream);
 	  _Function->reg4.Name = "";
+	  break;
+	  default:
+	  if (successor_set.size() == 1 && (*successor_set.begin())->Type == IRI::LABEL) {
+	    after_dump = true;
+	  }
+	  break;
 	}
 	if (Type == STOREI) {
 		if (Operands[0].Type == Operand::LITERAL) {
@@ -302,6 +309,7 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 		*stream << "sys writes " << Operands[0].ToAssemblyString() << std::endl;
 	else
 		throw std::string("Unrecognized assembly directive!");
+
 	// register state
 	/*
     *stream << ";R0: " << _Function->reg1.Name << " [D:" << _Function->reg1.Dirty << "]" <<
@@ -319,6 +327,16 @@ void IRI::PrintAssembly(std::stringstream* stream) {
 	*stream << "} ";
 	*stream << std::endl;
 	*/
+	if (after_dump) {
+	  _Function->write_back_if_dirty(&_Function->reg1, stream);
+	  _Function->reg1.Name = "";
+	  _Function->write_back_if_dirty(&_Function->reg2, stream);
+	  _Function->reg2.Name = "";
+	  _Function->write_back_if_dirty(&_Function->reg3, stream);
+	  _Function->reg3.Name = "";
+	  _Function->write_back_if_dirty(&_Function->reg4, stream);
+	  _Function->reg4.Name = "";
+	}
 
 }
 

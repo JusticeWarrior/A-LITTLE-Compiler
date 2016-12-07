@@ -1,0 +1,14 @@
+Please enter an integer number: 479001600
+
+STATISTICS _____________________________
+   #Instructions:530
+    (move-ops mem:0, reglit:389)
+    ( int-ops mem:4, reglit:137)
+    (  fp-ops mem:0, reglit:0)
+   Memory Usage (mem:4,reg:481)
+      register-use[25,25,188,243]
+   Total Cycles = 567
+OTHER STATSvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    (int-ops:49, fp-ops:0)
+    (branches:50)
+      peephole-ops:0

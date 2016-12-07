@@ -21,11 +21,9 @@ run_test() {
 
 run_test fma
 run_test factorial2
-#run_test fibonacci2
-echo "PROBLEMS! FIBBONACCI BROKE, FIX IT NERD"
+run_test fibonacci2
 run_test step4_testcase2
 run_test step4_testcase3
 run_test test_adv
 run_test test_if
-#run_test test_dowhile
-echo "PROBLEMS, DO WHILE BROKE TOO"
+run_test test_dowhile

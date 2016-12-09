@@ -1,0 +1,13 @@
+2.64575
+STATISTICS _____________________________
+   #Instructions:3121
+    (move-ops mem:704, reglit:1513)
+    ( int-ops mem:0, reglit:603)
+    (  fp-ops mem:1, reglit:300)
+   Memory Usage (mem:705,reg:3718)
+      register-use[3,1203,1502,1010]
+   Total Cycles = 5018
+OTHER STATSvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    (int-ops:299, fp-ops:301)
+    (branches:300)
+      peephole-ops:0

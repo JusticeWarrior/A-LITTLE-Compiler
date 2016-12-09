@@ -1,0 +1,24 @@
+PROGRAM mutually_recursive BEGIN
+  FUNCTION INT is_even(INT a) BEGIN
+    IF (a = 0)
+      RETURN 1;
+    ELSIF(TRUE)
+      RETURN 1 - is_odd(a-1);
+    ENDIF
+  END
+
+  FUNCTION INT is_odd(INT a) BEGIN
+    IF (a = 0)
+      RETURN 0;
+    ELSIF(TRUE)
+      RETURN 1 - is_even(a-1);
+    ENDIF
+  END
+
+
+  FUNCTION INT main() BEGIN
+    RETURN is_even(1);
+  END
+
+
+END

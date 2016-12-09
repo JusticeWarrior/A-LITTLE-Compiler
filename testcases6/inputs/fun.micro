@@ -1,0 +1,26 @@
+PROGRAM test
+BEGIN
+
+	STRING eol := "\n";
+	STRING space := " ";
+	INT i, j;
+	FLOAT newapprox,approx,num;
+
+	FUNCTION VOID main()
+	BEGIN
+	
+		num := 7.0;	
+		i := 100;
+		j := 1;
+		approx := num;	
+	
+          DO
+	      WRITE(i,space,approx,eol);
+			newapprox := 0.5*(approx + num/approx);
+			approx := newapprox;
+			i := i-1;
+		WHILE (i != 0);
+
+		WRITE(approx);
+	END
+END

@@ -1,0 +1,25 @@
+PROGRAM customtest
+BEGIN
+	STRING eol := "\n";
+	
+
+	FUNCTION INT mult(INT a, INT b, INT c)
+	BEGIN
+	  RETURN a * b * c;
+	END
+
+	FUNCTION INT add(INT a, INT b, INT c, INT d)
+	BEGIN
+	  RETURN a + b + ((((c + d))));
+	END
+
+	FUNCTION INT main ()
+	BEGIN
+		INT a;
+		INT b;
+		INT sum;
+		sum := add(1,2,mult(1,2,2)/2,mult(2,3,1))+6;
+		-- sum := -12312312;
+		WRITE(sum,eol); -- Result should be 17
+	END
+END

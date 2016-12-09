@@ -11,7 +11,7 @@ fi
 
 echo -e RUNNING TEST
 for i in $RANGE; do
-  TEST_OUT=$(cat "testcases2/input/test${i}.micro" | micro);
+  TEST_OUT=$(Micro "testcases2/input/test${i}.micro");
   REAL_OUT=$(cat "testcases2/output/test${i}.out");
   if ! cat testcases2/input/test${i}.micro | micro | cmp -s - testcases2/output/test${i}.out  ; then
     COLOR="\033[0;31m"

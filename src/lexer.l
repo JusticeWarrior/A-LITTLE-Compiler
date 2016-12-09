@@ -140,7 +140,8 @@ int main(int argc, char** argv){
       std::cout << ss.rdbuf() << std::endl;
     }
     else
-      std::cout << "Problems!" << std::endl;
+      parser.table_factory.print_table_stack_trace(ss) ;
+      std::cout << ss.rdbuf();
     }
     catch (const char* c){
       std::cout <<  c << std::endl;

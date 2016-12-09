@@ -7,7 +7,7 @@ exit_code=0
 run_test() {
   echo "RUNNING FILE ${1}.micro =================="
   Micro testcases3/input/$1.micro > test.out
-  testcases3/tiny test.out | head -n1 > test.result
+  testcases6/tiny4R test.out | head -n1 > test.result
   rm test.out
   if testcases3/tiny testcases3/output/$1.out | head -n1 | diff - test.result ; then
     echo PASSED

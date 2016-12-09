@@ -64,7 +64,7 @@ void TableFactory::print_table_stack_trace(std::stringstream& ss_out) {
 
 void TableFactory::print_global_declarations(std::stringstream& ss_out) {
   // Print out the global declarations
-  ss_out << global_dec->rdbuf();
+  ss_out << global_dec->rdbuf() << std::endl;
 
   // Add to it the initial code to jump to main and jump out
   ss_out << "push\npush r0\npush r1\npush r2\npush r3\njsr main\nsys halt" << std::endl;

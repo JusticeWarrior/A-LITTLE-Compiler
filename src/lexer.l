@@ -108,37 +108,42 @@ int main(int argc, char** argv){
   std::stringstream ss;
   std::ifstream file(argv[1]);
   LittleParser parser = LittleParser(&file);
-  try{
-    parser.parse();
-  }
-  catch(std::string a) {
-    std::cerr << a << std::endl;
-  }
-  if (parser.accepted()) {
-    try {
-    ss << ";IR code" << std::endl;
-    parser.print_ir(ss);
-    ss << ";tiny code" << std::endl;
-    }
-    catch(std::string a){
-      std::cerr << a << std::endl;
-    }
-    catch(const char* a){
-      std::cerr << a << std::endl;
-    }
-    parser.table_factory.print_global_declarations(ss);
+  try {
     try{
-      parser.print_assembly(ss);
+      parser.parse();
     }
-    catch(std::string str){
-      std::cerr << str << std::endl;
+    catch(std::string a) {
+      std::cerr << a << std::endl;
     }
-    catch(const char* str){
-      std::cerr << str << std::endl;
+    if (parser.accepted()) {
+      try {
+	ss << ";IR code" << std::endl;
+	parser.print_ir(ss);
+	ss << ";tiny code" << std::endl;
+      }
+      catch(std::string a){
+	std::cerr << a << std::endl;
+      }
+      catch(const char* a){
+	std::cerr << a << std::endl;
+      }
+      parser.table_factory.print_global_declarations(ss);
+      try{
+	parser.print_assembly(ss);
+      }
+      catch(std::string str){
+	std::cerr << "Assembly problem: " << str << std::endl;
+      }
+      catch(const char* str){
+	std::cerr << "Assembly problem: " << str << std::endl;
+      }
+      std::cout << ss.rdbuf() << std::endl;
     }
-    std::cout << ss.rdbuf() << std::endl;
-  }
-  else
-    std::cout << "Problems!" << std::endl;
+    else
+      std::cout << "Problems!" << std::endl;
+    }
+    catch (const char* c){
+      std::cout <<  c << std::endl;
+    }
 }
 

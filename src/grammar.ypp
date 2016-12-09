@@ -348,7 +348,7 @@
       for (it = str_arr->begin(); it != str_arr->end(); it++) {
 	symbol = parser.table_factory.get_symbol(*it);
 	if (!symbol)
-	  throw "Symbol not found!";
+	  throw std::string("Symbol ") + *it + " not found!";
 	DataObject data_object = DataObject(symbol);
 	iri = IRI::create(
 	  data_object.data_type == DataObject::FLOAT ? IRI::READF : IRI::READI,
@@ -368,7 +368,7 @@
       for (it = str_arr->begin(); it != str_arr->end(); it++) {
 	symbol = parser.table_factory.get_symbol(*it);
 	if (!symbol)
-	  throw "Symbol not found!";
+	  throw std::string("Symbol ") + *it + " not found!";
 	DataObject data_object = DataObject(symbol);
 	iri = IRI::create(
 	  data_object.data_type == DataObject::FLOAT ? IRI::WRITEF : (data_object.data_type == DataObject::STRING ? IRI::WRITES : IRI::WRITEI),

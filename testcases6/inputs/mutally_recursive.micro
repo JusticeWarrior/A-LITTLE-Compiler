@@ -1,0 +1,11 @@
+PROGRAM mutually_recursive BEGIN
+  FUNCTION INT is_even(INT a) BEGIN
+    RETURN 1;
+  END
+
+  FUNCTION INT main() BEGIN
+    RETURN is_even(1);
+  END
+
+
+END

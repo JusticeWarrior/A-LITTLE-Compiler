@@ -1,6 +1,7 @@
 #include "iri.hpp"
 #include "function.hpp"
 #include <set>
+#include <iostream>
 
 IRI::IRI(Types type, Operand op1)
 	:Type(type), dump(false) {

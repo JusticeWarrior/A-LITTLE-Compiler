@@ -9,7 +9,7 @@ TableFactory::TableFactory():
   error(false),
   ss(new std::stringstream()),
   global_dec(new std::stringstream())
-  {}
+  {*global_dec << std::endl;}
 TableFactory::~TableFactory(){
   delete ss;
   delete global_dec;
